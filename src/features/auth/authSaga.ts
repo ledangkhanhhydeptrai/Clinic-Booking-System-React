@@ -3,11 +3,11 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import { loginRequest, setToken } from "./authSlice";
 import { loginApi } from "./api";
 
-interface LoginPayload {
+export interface LoginPayload {
   username: string;
   password: string;
 }
-interface LoginResponse {
+export interface LoginResponse {
   status: number;
   message: string;
   data: {
@@ -16,11 +16,7 @@ interface LoginResponse {
 }
 function* handleLogin(action: PayloadAction<LoginPayload>) {
   try {
-    const res: LoginResponse = yield call(
-      loginApi,
-      action.payload.username,
-      action.payload.password
-    );
+    const res: LoginResponse = yield call(loginApi, action.payload);
     yield put(setToken(res.data.token));
   } catch (error) {
     console.error("Login failed", error);
