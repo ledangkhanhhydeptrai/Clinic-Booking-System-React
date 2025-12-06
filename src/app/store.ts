@@ -9,7 +9,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       thunk: false,
       serializableCheck: false
-    })
+    }).concat(sagaMiddleware) // <--- phải concat sagaMiddleware
 });
 sagaMiddleware.run(rootSaga);
 export type AppDispatch = typeof store.dispatch;

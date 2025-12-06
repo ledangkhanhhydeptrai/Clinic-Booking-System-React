@@ -1,8 +1,8 @@
 export const API = {
   AUTH: {
-    LOGIN: "/auth/login"
+    LOGIN: "auth/login"
   },
   ACCOUNT: {
-    LIST: "/account"
+    LIST: "account"
   }
 };
