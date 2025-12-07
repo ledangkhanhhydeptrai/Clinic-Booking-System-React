@@ -1,14 +1,15 @@
-import { useMutation, type UseMutationResult } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { setToken } from "./authSlice";
 import { loginApi } from "./api";
-import type { ApiError } from "./types";
-import type { LoginPayload, LoginResponse } from "./authSaga";
 
-export const useLogin = (): UseMutationResult<
-  LoginResponse,
-  ApiError,
-  LoginPayload
-> => {
-  return useMutation<LoginResponse, ApiError, LoginPayload>({
-    mutationFn: loginApi
+export function useLogin() {
+  const dispatch = useDispatch();
+  return useMutation({
+    mutationFn: loginApi,
+    retry: false,
+    onSuccess: (data) => {
+      dispatch(setToken(data.data.token));
+    }
   });
-};
+}
