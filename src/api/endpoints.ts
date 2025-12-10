@@ -4,5 +4,8 @@ export const API = {
   },
   ACCOUNT: {
     LIST: "account"
+  },
+  DOCTOR: {
+    DOCTOR: "doctors"
   }
 };
