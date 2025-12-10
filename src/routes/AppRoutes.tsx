@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { publicRoutes } from "./publicRoutes";
 import ProtectedRoutes from "./ProtectedRoutes";
 import { privateRoutes } from "./privateRoutes";
+import Layout from "../pages/admin/layout";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -11,9 +12,11 @@ const AppRoutes: React.FC = () => {
         <Route key={route.path} path={route.path} element={route.element} />
       ))}
       <Route element={<ProtectedRoutes />}>
-        {privateRoutes.map(({ path, element }, index) => (
-          <Route key={index} path={path} element={element} />
-        ))}
+        <Route element={<Layout />}>
+          {privateRoutes.map(({ path, element }, index) => (
+            <Route key={index} path={path} element={element} />
+          ))}
+        </Route>
       </Route>
     </Routes>
   );
