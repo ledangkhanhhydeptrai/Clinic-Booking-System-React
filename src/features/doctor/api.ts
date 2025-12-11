@@ -10,5 +10,7 @@ export const DoctorAPI = {
   updateDoctorById: (
     id: string,
     data: { name: string; specialty: string; phone: string }
-  ) => axiosClient.put(`/api/${API.DOCTOR.DOCTOR}/${id}`, data)
+  ) => axiosClient.put(`/api/${API.DOCTOR.DOCTOR}/${id}`, data),
+  deleteDoctorById: (id: string) =>
+    axiosClient.delete(`/api/${API.DOCTOR.DOCTOR}/${id}`)
 };

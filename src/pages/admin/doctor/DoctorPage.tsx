@@ -6,7 +6,10 @@ import DoctorCard from "./components/DoctorCard";
 import DoctorModal from "./components/DoctorModal";
 import EmptyState from "./components/EmptyState";
 import GlobalStyles from "./components/GlobalStyles";
-import { useDoctor, type DataDoctor } from "../../../features/doctor/useDoctors";
+import {
+  useDoctor,
+  type DataDoctor
+} from "../../../features/doctor/useDoctors";
 import { useNavigate } from "react-router-dom";
 export default function DoctorPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -20,7 +23,7 @@ export default function DoctorPage() {
   const [phone, setPhone] = React.useState<string>("");
   const [specialty, setSpecialty] = React.useState<string>("");
   const { data: doctors = [], createDoctor } = useDoctor();
-  const { updateDoctor } = useDoctor();
+  const { updateDoctor, deleteDoctor } = useDoctor();
   // Computed values
   const specialties = React.useMemo(() => {
     return Array.from(
@@ -109,10 +112,13 @@ export default function DoctorPage() {
     handleCloseModal();
   };
 
-  const handleDelete = () => {
-    // if (confirm("Bạn có chắc chắn muốn xóa bác sĩ này?")) {
-    //   setDoctors(doctors.filter((d) => d.id !== id));
-    // }
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDoctor(id);
+      alert("Xóa bác sĩ thành công");
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
