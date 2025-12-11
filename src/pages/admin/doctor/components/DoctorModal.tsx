@@ -1,9 +1,9 @@
 import React from "react";
-import type { DataDoctor } from "../../../../features/doctor/doctorSaga";
 import Button from "../../../../components/common/Button";
 import { PhoneCall, Stethoscope, User, X } from "lucide-react";
 import Label from "../../../../components/common/Label";
 import Input from "../../../../components/common/Input";
+import type { DataDoctor } from "../../../../features/doctor/useDoctors";
 export default function DoctorModal({
   isOpen,
   editingDoctor,

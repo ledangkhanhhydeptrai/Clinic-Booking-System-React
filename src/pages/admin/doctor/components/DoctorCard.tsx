@@ -1,7 +1,7 @@
 import React from "react";
-import type { DataDoctor } from "../../../../features/doctor/doctorSaga";
 import Button from "../../../../components/common/Button";
 import { Edit2, MoreVertical, Phone, TrashIcon } from "lucide-react";
+import type { DataDoctor } from "../../../../features/doctor/useDoctors";
 interface DoctorCardProps {
   doctor: DataDoctor;
   onEdit: (doctor: DataDoctor) => void;
