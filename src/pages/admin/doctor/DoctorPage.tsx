@@ -6,11 +6,8 @@ import DoctorCard from "./components/DoctorCard";
 import DoctorModal from "./components/DoctorModal";
 import EmptyState from "./components/EmptyState";
 import GlobalStyles from "./components/GlobalStyles";
-import { useDoctor } from "../../../features/doctor/useDoctors";
-import type { DataDoctor } from "../../../features/doctor/doctorSaga";
-
-// Interface phù hợp với API
-
+import { useDoctor, type DataDoctor } from "../../../features/doctor/useDoctors";
+import { useNavigate } from "react-router-dom";
 export default function DoctorPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterSpecialty, setFilterSpecialty] = React.useState("all");
@@ -18,16 +15,17 @@ export default function DoctorPage() {
   const [editingDoctor, setEditingDoctor] = React.useState<DataDoctor | null>(
     null
   );
+  const navigate = useNavigate();
   const [name, setName] = React.useState<string>("");
   const [phone, setPhone] = React.useState<string>("");
   const [specialty, setSpecialty] = React.useState<string>("");
-  const {
-    data: doctors = [],
-    createDoctor
-  } = useDoctor();
+  const { data: doctors = [], createDoctor } = useDoctor();
+  const { updateDoctor } = useDoctor();
   // Computed values
   const specialties = React.useMemo(() => {
-    return Array.from(new Set(doctors.map((d) => d.specialty)));
+    return Array.from(
+      new Set(doctors.map((d: DataDoctor) => d.specialty))
+    ) as string[];
   }, [doctors]);
 
   const filteredDoctors = React.useMemo(() => {
@@ -70,12 +68,20 @@ export default function DoctorPage() {
     e.preventDefault();
 
     if (editingDoctor) {
-      // // Update doctor
-      // setDoctors(
-      //   doctors.map((d) =>
-      //     d.id === editingDoctor.id ? { ...d, name, specialty, phone } : d
-      //   )
-      // );
+      updateDoctor(
+        {
+          id: editingDoctor.id,
+          name,
+          specialty,
+          phone
+        },
+        {
+          onSuccess: () => {
+            alert("Cập nhật thành công!");
+            handleCloseModal();
+          }
+        }
+      );
     } else {
       // Add new doctor
       try {
@@ -146,6 +152,7 @@ export default function DoctorPage() {
                 doctor={doctor}
                 onEdit={() => handleOpenModal(doctor)}
                 onDelete={handleDelete}
+                onView={() => navigate(`/admin/doctor/doctorId/${doctor.id}`)}
               />
             ))}
           </div>
