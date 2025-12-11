@@ -16,7 +16,6 @@ import {
   Activity,
   Stethoscope,
   Pill,
-  ClipboardList,
   BarChart3,
   MessageSquare,
   HelpCircle
@@ -466,26 +465,6 @@ const Layout: React.FC = () => {
               {/* Right Section */}
               <div className="flex items-center gap-3">
                 {/* Quick Stats */}
-                <div className="hidden xl:flex items-center gap-4 mr-4">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-emerald-50 to-emerald-100/50 rounded-lg border border-emerald-200">
-                    <Activity size={16} className="text-emerald-600" />
-                    <div>
-                      <p className="text-xs text-emerald-600 font-medium">
-                        Khám hôm nay
-                      </p>
-                      <p className="text-sm font-bold text-emerald-700">24</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-50 to-blue-100/50 rounded-lg border border-blue-200">
-                    <ClipboardList size={16} className="text-blue-600" />
-                    <div>
-                      <p className="text-xs text-blue-600 font-medium">
-                        Chờ khám
-                      </p>
-                      <p className="text-sm font-bold text-blue-700">8</p>
-                    </div>
-                  </div>
-                </div>
 
                 {/* Notifications */}
                 <Button
