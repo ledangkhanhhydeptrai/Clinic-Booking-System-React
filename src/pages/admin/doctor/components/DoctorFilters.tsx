@@ -31,7 +31,7 @@ const DoctorFilters: React.FC<DoctorFiltersProps> = ({
             type="text"
             placeholder="Tìm kiếm theo tên, chuyên khoa, số điện thoại..."
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={e => onSearchChange(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
           />
         </div>
@@ -42,15 +42,15 @@ const DoctorFilters: React.FC<DoctorFiltersProps> = ({
             name="specialty"
             title="Filter by specialty"
             value={filterSpecialty}
-            onChange={(e) => onSpecialtyChange(e.target.value)}
+            onChange={e => onSpecialtyChange(e.target.value)}
             className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
           >
             <option value="all">Tất cả chuyên môn</option>
-            {specialties.slice(1).map((specialty) => (
+            {specialties.slice(1).map(specialty =>
               <option value={specialty} key={specialty}>
                 {specialty}
               </option>
-            ))}
+            )}
           </select>
         </div>
       </div>

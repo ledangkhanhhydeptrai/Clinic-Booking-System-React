@@ -6,11 +6,13 @@ interface DoctorCardProps {
   doctor: DataDoctor;
   onEdit: (doctor: DataDoctor) => void;
   onDelete: (id: string) => void;
+  onView: () => void;
 }
 const DoctorCard: React.FC<DoctorCardProps> = ({
   doctor,
   onEdit,
-  onDelete
+  onDelete,
+  onView
 }) => {
   const getAvatarUrl = (id: string) => {
     const seed = id.charCodeAt(0) % 70;
@@ -57,7 +59,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
         <Button
           className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
           isLoading={false}
-          onClick={() => {}}
+          onClick={onView}
         >
           <MoreVertical size={18} className="text-slate-400" />
         </Button>
