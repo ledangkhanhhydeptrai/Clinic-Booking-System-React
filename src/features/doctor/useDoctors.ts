@@ -50,7 +50,14 @@ export function useDoctor(id?: string) {
       queryClient.invalidateQueries({ queryKey: ["doctors"] });
     }
   });
-
+  const deleteDoctorMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return DoctorAPI.deleteDoctorById(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["doctors"] });
+    }
+  });
   return {
     ...doctorQuery,
 
@@ -63,6 +70,10 @@ export function useDoctor(id?: string) {
     updateDoctor: updateDoctorMutation.mutate,
     updateDoctorAsync: updateDoctorMutation.mutateAsync,
     isUpdating: updateDoctorMutation.isPending,
-    updateError: updateDoctorMutation.error
+    updateError: updateDoctorMutation.error,
+    deleteDoctor: deleteDoctorMutation.mutate,
+    deleteDoctorAsync: deleteDoctorMutation.mutateAsync,
+    isDeleting: deleteDoctorMutation.isPending,
+    deleteError: deleteDoctorMutation.error
   };
 }
