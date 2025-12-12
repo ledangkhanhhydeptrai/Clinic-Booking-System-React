@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export default function AuthBranding() {
+  const navigate = useNavigate();
   return (
     <div className="hidden lg:block space-y-8">
       {/* Logo and title */}
@@ -20,7 +23,7 @@ export default function AuthBranding() {
             </div>
             <div className="absolute -inset-1 bg-teal-500/30 rounded-2xl pulse-ring"></div>
           </div>
-          <div>
+          <div onClick={() => navigate("/")}>
             <h2 className="text-3xl font-bold text-slate-800">
               HealthCare Plus
             </h2>

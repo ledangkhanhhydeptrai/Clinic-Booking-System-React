@@ -46,7 +46,7 @@ const DoctorFilters: React.FC<DoctorFiltersProps> = ({
             className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
           >
             <option value="all">Tất cả chuyên môn</option>
-            {specialties.slice(1).map(specialty =>
+            {specialties.map(specialty =>
               <option value={specialty} key={specialty}>
                 {specialty}
               </option>
