@@ -31,7 +31,7 @@ export default function* authSaga() {
 }
 function* handleLogout() {
   // Xoá localStorage nếu cần
-  queryClient.clear(); 
+  queryClient.clear();
   yield put(push("/"));
   // Reset toàn bộ redux
   yield put({ type: "RESET_APP" });
