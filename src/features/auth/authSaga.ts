@@ -1,8 +1,9 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { call, put, takeLatest } from "redux-saga/effects";
-import { loginRequest, setRole, setToken } from "./authSlice";
+import { loginRequest, logout, setRole, setToken } from "./authSlice";
 import { loginApi } from "./api";
-
+import { queryClient } from "../../queries/queryClient";
+import { push } from "redux-first-history";
 export interface LoginPayload {
   username: string;
   password: string;
@@ -26,4 +27,12 @@ function* handleLogin(action: PayloadAction<LoginPayload>) {
 }
 export default function* authSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
+  yield takeLatest(logout.type, handleLogout); // 👈 Thêm dòng này
+}
+function* handleLogout() {
+  // Xoá localStorage nếu cần
+  queryClient.clear(); 
+  yield put(push("/"));
+  // Reset toàn bộ redux
+  yield put({ type: "RESET_APP" });
 }

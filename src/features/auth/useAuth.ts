@@ -15,7 +15,7 @@ export function useLogin() {
       dispatch(setRole(data.data.role));
       switch (data.data.role) {
         case "ADMIN":
-          navigate("/admin");
+          navigate("/admin/doctor");
           break;
         case "DOCTOR":
           navigate("/doctor");
