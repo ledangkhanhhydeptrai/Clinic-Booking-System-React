@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import Button from "../../components/common/Button";
 import { Outlet, useNavigate } from "react-router-dom";
+import { logout } from "../../features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const Layout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -29,6 +31,7 @@ const Layout: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState("doctors");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const menuItems = [
     {
       id: "dashboard",
@@ -42,20 +45,20 @@ const Layout: React.FC = () => {
       label: "Bác sĩ",
       icon: Stethoscope,
       badge: null,
-      path: "/admin/dashboard"
+      path: "/admin/doctor"
     },
     {
       id: "patients",
       label: "Bệnh nhân",
       icon: Users,
-      badge: "24",
-      path: "/admin/dashboard"
+      badge: null,
+      path: "/admin/user"
     },
     {
       id: "appointments",
       label: "Lịch hẹn",
       icon: Calendar,
-      badge: "8",
+      badge: null,
       path: "/admin/dashboard"
     },
     {
@@ -76,7 +79,7 @@ const Layout: React.FC = () => {
       id: "lab-results",
       label: "Kết quả XN",
       icon: Activity,
-      badge: "3",
+      badge: null,
       path: "/admin/dashboard"
     },
     {
@@ -93,7 +96,7 @@ const Layout: React.FC = () => {
       id: "messages",
       label: "Tin nhắn",
       icon: MessageSquare,
-      badge: "5"
+      badge: null
     },
     {
       id: "help",
@@ -108,7 +111,6 @@ const Layout: React.FC = () => {
       badge: null
     }
   ];
-
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/20 to-slate-50">
       <style>{`
@@ -498,7 +500,7 @@ const Layout: React.FC = () => {
 
                   {/* User Dropdown */}
                   {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 glass-morphism rounded-xl shadow-2xl border border-slate-200 py-2 animate-fade">
+                    <div className="absolute right-0 mt-2 w-56 glass-morphism rounded-xl shadow-2xl border border-slate-200 py-2 animate-fade z-auto">
                       <div className="px-4 py-3 border-b border-slate-200/50">
                         <p className="text-sm font-semibold text-slate-900">
                           Bác sĩ Nguyễn Văn A
@@ -526,6 +528,11 @@ const Layout: React.FC = () => {
                       <div className="h-px bg-slate-200 my-2" />
                       <Button
                         isLoading={false}
+                        onClick={() => {
+                          dispatch(logout());
+                          navigate("/");
+                          window.location.reload();
+                        }}
                         className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors text-left text-red-600"
                       >
                         <LogOut size={16} />

@@ -6,11 +6,16 @@ import DoctorCard from "./components/DoctorCard";
 import DoctorModal from "./components/DoctorModal";
 import EmptyState from "./components/EmptyState";
 import GlobalStyles from "./components/GlobalStyles";
+import ErrorIcon from "@mui/icons-material/Error";
 import {
   useDoctor,
   type DataDoctor
 } from "../../../features/doctor/useDoctors";
 import { useNavigate } from "react-router-dom";
+import { NotificationProps } from "../../../notification/Notification";
+import { Alert, Snackbar } from "@mui/material";
+import { CheckCircleIcon } from "lucide-react";
+import SlideTransitions from "../../../slide/SlideTransition";
 export default function DoctorPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterSpecialty, setFilterSpecialty] = React.useState("all");
@@ -22,6 +27,11 @@ export default function DoctorPage() {
   const [name, setName] = React.useState<string>("");
   const [phone, setPhone] = React.useState<string>("");
   const [specialty, setSpecialty] = React.useState<string>("");
+  const [notification, setNotification] = React.useState<NotificationProps>({
+    open: false,
+    message: "",
+    severity: "success"
+  });
   const { data: doctors = [], createDoctor } = useDoctor();
   const { updateDoctor, deleteDoctor } = useDoctor();
   // Computed values
@@ -30,7 +40,9 @@ export default function DoctorPage() {
       new Set(doctors.map((d: DataDoctor) => d.specialty))
     ) as string[];
   }, [doctors]);
-
+  const handleClose = () => {
+    setNotification((prev) => ({ ...prev, open: false }));
+  };
   const filteredDoctors = React.useMemo(() => {
     return doctors.filter((doctor: DataDoctor) => {
       const matchesSearch =
@@ -96,7 +108,11 @@ export default function DoctorPage() {
           },
           {
             onSuccess: () => {
-              console.log("Tạo bác sĩ thành công!");
+              setNotification({
+                open: true,
+                message: "Tạo bác sĩ thành công",
+                severity: "success"
+              });
               handleCloseModal();
             },
             onError: (err) => {
@@ -122,11 +138,11 @@ export default function DoctorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-slate-50">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-cyan-50">
       <GlobalStyles />
 
       {/* Header Section */}
-      <div className="glass-effect border-b border-slate-200/50 animate-slide-in sticky top-0 z-50">
+      <div className="glass-effect border-b border-slate-200/50 animate-slide-in block top-10 z-50">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <DoctorHeader onAddDoctor={() => handleOpenModal()} />
           <DoctorStats
@@ -180,6 +196,39 @@ export default function DoctorPage() {
         setSpecialty={setSpecialty}
         setPhone={setPhone}
       />
+      <Snackbar
+        open={notification.open}
+        onClose={handleClose}
+        TransitionComponent={SlideTransitions}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={4000}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={notification.severity}
+          variant="filled"
+          iconMapping={{
+            success: <CheckCircleIcon fontSize="small" />,
+            error: <ErrorIcon fontSize="small" />
+          }}
+          sx={{
+            width: "100%",
+            bgcolor:
+              notification.severity === "success" ? "#4caf50" : "#f44336",
+            color: "white",
+            fontWeight: "bold",
+            borderRadius: "12px",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.2)",
+            px: 2,
+            py: 1.5,
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

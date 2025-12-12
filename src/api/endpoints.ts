@@ -7,5 +7,8 @@ export const API = {
   },
   DOCTOR: {
     DOCTOR: "doctors"
+  },
+  PATIENT: {
+    PATIENT: "patient"
   }
 };
