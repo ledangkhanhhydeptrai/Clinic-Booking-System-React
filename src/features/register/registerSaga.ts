@@ -20,7 +20,7 @@ function* handleRegister(action: PayloadAction<RegisterPayload>) {
   try {
     const res: RegisterResponse = yield call(RegisterAPI, action.payload);
 
-    if (res.status === 200) {
+    if (res.status === 201) {
       yield put(registerSuccess());
       toast.success("🎉 Đăng ký thành công!");
     }

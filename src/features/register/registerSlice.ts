@@ -3,10 +3,12 @@ import { RegisterPayload } from "./registerSaga";
 
 interface RegisterState {
   isLoading: boolean;
+  isSuccess: boolean;
   payload?: RegisterPayload;
 }
 const initialState: RegisterState = {
   isLoading: false,
+  isSuccess: false
 };
 const registerSlice = createSlice({
   name: "register",
@@ -18,6 +20,7 @@ const registerSlice = createSlice({
     },
     registerSuccess(state) {
       state.isLoading = false;
+      state.isSuccess = true;
     },
     registerFailure(state) {
       state.isLoading = false;
