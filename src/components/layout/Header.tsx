@@ -108,7 +108,10 @@ const Header: React.FC = () => {
               </button>
 
               {/* Register Button */}
-              <button className="px-5 py-2 text-[14px] bg-white text-rose-600 border-2 border-rose-600 rounded-lg font-semibold hover:bg-rose-50 transition-all duration-200 whitespace-nowrap">
+              <button
+                onClick={() => navigate("/auth/register")}
+                className="px-5 py-2 text-[14px] bg-white text-rose-600 border-2 border-rose-600 rounded-lg font-semibold hover:bg-rose-50 transition-all duration-200 whitespace-nowrap"
+              >
                 Đăng ký
               </button>
 
