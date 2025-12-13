@@ -1,20 +1,25 @@
-import { combineReducers, AnyAction } from "@reduxjs/toolkit";
+import { combineReducers } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
+import registerReducer from "../features/register/registerSlice";
 
 const appReducer = combineReducers({
-  auth: authReducer
+  auth: authReducer,
+  register: registerReducer
 });
 
-// Lấy type của root state trước khi reset
-export type AppState = ReturnType<typeof appReducer>;
-
-const rootReducer = (state: AppState | undefined, action: AnyAction): AppState => {
+/**
+ * Root reducer có khả năng reset toàn bộ store
+ */
+const rootReducer = (
+  state: ReturnType<typeof appReducer> | undefined,
+  action: { type: string }
+) => {
   if (action.type === "RESET_APP") {
-    state = undefined; // reset toàn bộ redux
+    state = undefined;
   }
 
   return appReducer(state, action);
 };
 
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof appReducer>;
 export default rootReducer;
