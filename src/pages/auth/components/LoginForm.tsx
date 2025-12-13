@@ -67,7 +67,10 @@ export default function LoginForm({
         <div className="mt-8 text-center">
           <p className="text-sm">
             Bạn là bệnh nhân mới?{" "}
-            <a href="#" className="text-teal-600 font-semibold">
+            <a
+              href="/auth/register"
+              className="text-teal-600 font-semibold hover:underline"
+            >
               Đăng ký tài khoản
             </a>
           </p>

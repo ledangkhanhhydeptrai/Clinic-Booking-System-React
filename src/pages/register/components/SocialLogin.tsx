@@ -52,7 +52,7 @@ export default function SocialLogin({
             <>
               Đã có tài khoản?{" "}
               <a
-                href="#"
+                href="/auth"
                 className="font-semibold text-teal-600 hover:text-teal-700 transition-colors"
               >
                 Đăng nhập ngay

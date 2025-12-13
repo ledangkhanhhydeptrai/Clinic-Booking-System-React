@@ -28,7 +28,7 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: ""
   });
-  const { register, isLoading } = useRegister();
+  const { register, isLoading, isSuccess } = useRegister();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload: RegisterPayload = {
@@ -39,12 +39,14 @@ export default function RegisterPage() {
       password: formData.password
     };
     register(payload);
-    toast.success("Đăng ký thành công")
+    if (isSuccess) {
+      toast.success("Đăng ký thành công");
+    }
   };
 
   /* ================= RENDER ================= */
   return (
-    <div className="min-h-screen bg-linear-to-br from-teal-50 via-cyan-50 to-blue-50 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="bg-linear-to-br from-teal-50 via-cyan-50 to-blue-50 flex items-center justify-center relative overflow-hidden">
       <MedicalDecorations />
 
       <div className="w-full max-w-6xl flex rounded-3xl overflow-hidden shadow-2xl bg-white relative my-8">
