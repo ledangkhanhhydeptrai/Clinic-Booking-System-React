@@ -14,7 +14,14 @@ const storage = {
   },
   setRole: (role: string) => localStorage.setItem(ROLE_KEY, role),
   getRole: () => localStorage.getItem(ROLE_KEY),
-  removeRole: () => localStorage.removeItem(ROLE_KEY)
+  removeRole: () => localStorage.removeItem(ROLE_KEY),
+  getUser: () => {
+    const data = localStorage.getItem("user");
+    return data ? JSON.parse(data) : null;
+  },
+  setUser: (user: { username: string }) =>
+    localStorage.setItem("user", JSON.stringify(user)),
+  removeUser: () => localStorage.removeItem("user") // ✅ sửa tên hàm
 };
 
 export default storage;

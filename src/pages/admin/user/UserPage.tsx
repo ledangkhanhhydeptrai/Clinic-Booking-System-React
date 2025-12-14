@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Phone, Calendar, User, Plus, Filter } from "lucide-react";
+import { Search, Phone, Calendar, User, Filter } from "lucide-react";
 import { PatientProps, useUser } from "../../../features/user/useUser";
 import GlobalStyles from "../doctor/components/GlobalStyles";
 
@@ -38,10 +38,6 @@ const UserPage: React.FC = () => {
                 Quản lý thông tin và hồ sơ bệnh nhân
               </p>
             </div>
-            <button className="bg-linear-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-2xl font-medium hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2">
-              <Plus size={20} />
-              Thêm Bệnh Nhân
-            </button>
           </div>
 
           {/* Search and Filter Bar */}
