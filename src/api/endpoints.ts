@@ -11,5 +11,8 @@ export const API = {
   },
   PATIENT: {
     PATIENT: "patient"
+  },
+  PROFILE: {
+    PROFILE: "profile"
   }
 };

@@ -1,84 +1,27 @@
 import React from "react";
 import {
   Phone,
-  Mail,
-  MapPin,
-  Calendar,
   Edit3,
   Settings,
   Shield,
   Bell,
-  Heart,
-  Activity,
-  Clock,
-  Award,
   FileText,
-  Camera,
-  LogOut
+  LogOut,
+  User
 } from "lucide-react";
 import Button from "../../components/common/Button";
+import useProfile from "../../features/profile/useProfile";
+import ProfileEmptyState from "./components/ProfileEmptyState";
 
 const ProfilePage: React.FC = () => {
-  // Mock data from API response
-  const profileData = {
-    id: "8932234a-a06b-45a0-b9bd-d8077b9c7830",
-    username: "ledangkhanhhydeptrai",
-    fullName: "Lê Đặng Khánh Hỷ",
-    phone: "0123456789",
-    // Additional mock data for UI completeness
-    email: "ledangkhanh@healthcare.vn",
-    location: "Hồ Chí Minh, Việt Nam",
-    joinDate: "01/01/2024",
-    avatar: "👨‍⚕️"
-  };
-
-  const stats = [
-    {
-      label: "Lượt khám",
-      value: "12",
-      icon: Activity,
-      color: "from-blue-500 to-cyan-500"
-    },
-    {
-      label: "Đánh giá",
-      value: "4.9",
-      icon: Award,
-      color: "from-amber-500 to-orange-500"
-    },
-    {
-      label: "Điểm thưởng",
-      value: "850",
-      icon: Heart,
-      color: "from-rose-500 to-pink-500"
-    }
-  ];
-
-  const recentActivity = [
-    {
-      id: 1,
-      title: "Khám tim mạch",
-      doctor: "BS. Nguyễn Văn A",
-      date: "15/12/2024",
-      status: "Hoàn thành"
-    },
-    {
-      id: 2,
-      title: "Tái khám nội khoa",
-      doctor: "BS. Trần Thị B",
-      date: "10/12/2024",
-      status: "Hoàn thành"
-    },
-    {
-      id: 3,
-      title: "Khám định kỳ",
-      doctor: "BS. Lê Văn C",
-      date: "05/12/2024",
-      status: "Đã hủy"
-    }
-  ];
+  const { data: profile } = useProfile();
+  console.log("Profile",profile);
+  if (!profile) {
+    return <ProfileEmptyState />;
+  }
 
   return (
-    <div className="bg-linear-to-br from-stone-50 via-white to-rose-50/30">
+    <div className="bg-linear-to-br from-stone-50 via-white to-rose-50/30 min-h-screen">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700;800&family=Work+Sans:wght@400;500;600;700;800&display=swap');
         
@@ -98,17 +41,6 @@ const ProfilePage: React.FC = () => {
           to {
             opacity: 1;
             transform: translateY(0);
-          }
-        }
-        
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
           }
         }
         
@@ -145,10 +77,6 @@ const ProfilePage: React.FC = () => {
           animation: fadeInUp 0.6s ease-out forwards;
         }
         
-        .animate-slideInRight {
-          animation: slideInRight 0.6s ease-out forwards;
-        }
-        
         .animate-scaleIn {
           animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
@@ -165,15 +93,6 @@ const ProfilePage: React.FC = () => {
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
         }
         
-        .stat-card {
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .stat-card:hover {
-          transform: translateY(-8px) scale(1.05);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        
         .info-item {
           transition: all 0.3s ease;
         }
@@ -181,17 +100,6 @@ const ProfilePage: React.FC = () => {
         .info-item:hover {
           transform: translateX(8px);
           background: linear-gradient(90deg, rgba(244, 63, 94, 0.05), transparent);
-        }
-        
-        .activity-item {
-          transition: all 0.3s ease;
-          border-left: 3px solid transparent;
-        }
-        
-        .activity-item:hover {
-          border-left-color: #f43f5e;
-          background: rgba(244, 63, 94, 0.02);
-          transform: translateX(4px);
         }
         
         .btn-primary {
@@ -238,37 +146,20 @@ const ProfilePage: React.FC = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
             {/* Avatar */}
             <div className="relative animate-scaleIn">
-              <div className="avatar-wrapper w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center text-7xl md:text-8xl animate-float">
-                {profileData.avatar}
+              <div className="avatar-wrapper w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center animate-float">
+                <User className="w-20 h-20 text-amber-600" />
               </div>
-              <Button
-                isLoading={false}
-                className="absolute bottom-2 right-2 w-12 h-12 bg-linear-to-br from-rose-500 to-orange-500 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
-              >
-                <Camera className="w-5 h-5" />
-              </Button>
             </div>
 
             {/* Profile Info */}
             <div className="flex-1">
-              <div className="mb-4">
+              <div className="mb-6">
                 <h1 className="profile-title text-4xl md:text-5xl font-black text-stone-900 mb-2">
-                  {profileData.fullName}
+                  {profile.fullName}
                 </h1>
                 <p className="text-lg text-stone-600 font-medium">
-                  @{profileData.username}
+                  @{profile.username}
                 </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3 mb-6">
-                <span className="inline-flex items-center space-x-2 bg-rose-100 text-rose-700 px-4 py-2 rounded-full font-semibold text-sm">
-                  <Shield className="w-4 h-4" />
-                  <span>Thành viên VIP</span>
-                </span>
-                <span className="inline-flex items-center space-x-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full font-semibold text-sm">
-                  <Award className="w-4 h-4" />
-                  <span>Khách hàng thân thiết</span>
-                </span>
               </div>
 
               <div className="flex flex-wrap gap-3">
@@ -292,34 +183,8 @@ const ProfilePage: React.FC = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - Stats & Info */}
+          {/* Left Column - Contact Info */}
           <div className="lg:col-span-1 space-y-8">
-            {/* Stats Cards */}
-            <div className="space-y-4 animate-fadeInUp">
-              {stats.map((stat, index) => (
-                <div
-                  key={index}
-                  className="stat-card glass-card p-6 rounded-2xl"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-3xl font-black text-stone-900 mb-1">
-                        {stat.value}
-                      </div>
-                      <div className="text-sm font-semibold text-stone-600">
-                        {stat.label}
-                      </div>
-                    </div>
-                    <div
-                      className={`w-14 h-14 bg-linear-to-br ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}
-                    >
-                      <stat.icon className="w-7 h-7 text-white" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
             {/* Contact Info */}
             <div className="section-card glass-card p-6 rounded-2xl animate-fadeInUp">
               <h3 className="profile-title text-xl font-bold text-stone-900 mb-4">
@@ -333,40 +198,18 @@ const ProfilePage: React.FC = () => {
                       Số điện thoại
                     </div>
                     <div className="font-semibold text-stone-900">
-                      {profileData.phone}
+                      {profile.phone}
                     </div>
                   </div>
                 </div>
                 <div className="info-item flex items-center space-x-3 p-3 rounded-lg">
-                  <Mail className="w-5 h-5 text-rose-600" />
+                  <User className="w-5 h-5 text-rose-600" />
                   <div>
                     <div className="text-xs font-semibold text-stone-500">
-                      Email
+                      ID người dùng
                     </div>
-                    <div className="font-semibold text-stone-900">
-                      {profileData.email}
-                    </div>
-                  </div>
-                </div>
-                <div className="info-item flex items-center space-x-3 p-3 rounded-lg">
-                  <MapPin className="w-5 h-5 text-rose-600" />
-                  <div>
-                    <div className="text-xs font-semibold text-stone-500">
-                      Địa chỉ
-                    </div>
-                    <div className="font-semibold text-stone-900">
-                      {profileData.location}
-                    </div>
-                  </div>
-                </div>
-                <div className="info-item flex items-center space-x-3 p-3 rounded-lg">
-                  <Calendar className="w-5 h-5 text-rose-600" />
-                  <div>
-                    <div className="text-xs font-semibold text-stone-500">
-                      Ngày tham gia
-                    </div>
-                    <div className="font-semibold text-stone-900">
-                      {profileData.joinDate}
+                    <div className="font-semibold text-stone-900 text-xs break-all">
+                      {profile.id}
                     </div>
                   </div>
                 </div>
@@ -415,133 +258,53 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column - Activity */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Recent Activity */}
-            <div className="section-card glass-card p-8 rounded-2xl animate-slideInRight">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="profile-title text-2xl font-bold text-stone-900">
-                  Lịch sử khám gần đây
-                </h3>
-                <button className="text-rose-600 font-semibold hover:underline">
-                  Xem tất cả
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {recentActivity.map((activity) => (
-                  <div
-                    key={activity.id}
-                    className="activity-item p-5 rounded-xl bg-white"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h4 className="font-bold text-stone-900 text-lg mb-1">
-                          {activity.title}
-                        </h4>
-                        <p className="text-stone-600 text-sm font-medium">
-                          {activity.doctor}
-                        </p>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          activity.status === "Hoàn thành"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {activity.status}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-stone-500 text-sm">
-                      <Clock className="w-4 h-4" />
-                      <span>{activity.date}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Health Summary */}
-            <div className="section-card glass-card p-8 rounded-2xl animate-slideInRight">
+          {/* Right Column - Info Card */}
+          <div className="lg:col-span-2">
+            <div className="section-card glass-card p-8 rounded-2xl animate-fadeInUp">
               <h3 className="profile-title text-2xl font-bold text-stone-900 mb-6">
-                Tổng quan sức khỏe
+                Chi tiết tài khoản
               </h3>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-6">
                 <div className="p-6 bg-linear-to-br from-blue-50 to-cyan-50 rounded-xl border-2 border-blue-100">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-                      <Activity className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-blue-600">
-                        Huyết áp
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-blue-600 mb-2">
+                        Tên đầy đủ
                       </div>
                       <div className="text-2xl font-black text-blue-900">
-                        120/80
+                        {profile.fullName}
                       </div>
                     </div>
-                  </div>
-                  <div className="text-xs text-blue-700 font-medium">
-                    Bình thường - Cập nhật: 15/12/2024
+                    <User className="w-8 h-8 text-blue-400" />
                   </div>
                 </div>
 
                 <div className="p-6 bg-linear-to-br from-rose-50 to-pink-50 rounded-xl border-2 border-rose-100">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-rose-500 rounded-xl flex items-center justify-center">
-                      <Heart className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-rose-600">
-                        Nhịp tim
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-rose-600 mb-2">
+                        Tên đăng nhập
                       </div>
                       <div className="text-2xl font-black text-rose-900">
-                        72 bpm
+                        @{profile.username}
                       </div>
                     </div>
-                  </div>
-                  <div className="text-xs text-rose-700 font-medium">
-                    Tốt - Cập nhật: 15/12/2024
-                  </div>
-                </div>
-
-                <div className="p-6 bg-linear-to-br from-amber-50 to-orange-50 rounded-xl border-2 border-amber-100">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
-                      <Award className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-amber-600">
-                        BMI
-                      </div>
-                      <div className="text-2xl font-black text-amber-900">
-                        22.5
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-amber-700 font-medium">
-                    Lý tưởng - Cập nhật: 10/12/2024
+                    <User className="w-8 h-8 text-rose-400" />
                   </div>
                 </div>
 
                 <div className="p-6 bg-linear-to-br from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-100">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
-                      <Activity className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-emerald-600">
-                        Đường huyết
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-emerald-600 mb-2">
+                        Số điện thoại
                       </div>
                       <div className="text-2xl font-black text-emerald-900">
-                        95 mg/dL
+                        {profile.phone}
                       </div>
                     </div>
-                  </div>
-                  <div className="text-xs text-emerald-700 font-medium">
-                    Bình thường - Cập nhật: 12/12/2024
+                    <Phone className="w-8 h-8 text-emerald-400" />
                   </div>
                 </div>
               </div>
@@ -549,6 +312,10 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Background Decorations */}
+      <div className="fixed top-20 right-10 w-72 h-72 bg-linear-to-br from-rose-200/30 to-orange-200/30 rounded-full blur-3xl -z-10"></div>
+      <div className="fixed bottom-20 left-10 w-96 h-96 bg-linear-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -z-10"></div>
     </div>
   );
 };
