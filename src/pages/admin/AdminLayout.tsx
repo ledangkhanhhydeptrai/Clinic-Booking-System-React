@@ -25,7 +25,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { logout } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 
-const Layout: React.FC = () => {
+const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("doctors");
@@ -563,4 +563,4 @@ const Layout: React.FC = () => {
   );
 };
 
-export default Layout;
+export default AdminLayout;

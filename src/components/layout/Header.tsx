@@ -310,7 +310,7 @@ const Header: React.FC = () => {
                     <div className="absolute right-0 mt-3 w-48 user-dropdown dropdown-enter overflow-hidden">
                       <Button
                         isLoading={false}
-                        onClick={() => navigate("/profile")}
+                        onClick={() => navigate("/user/profile")}
                         className="w-full text-left px-5 py-3 text-[15px] font-medium text-stone-700 hover:bg-linear-to-r hover:from-rose-50 hover:to-orange-50 transition-all duration-200"
                       >
                         Hồ sơ cá nhân
