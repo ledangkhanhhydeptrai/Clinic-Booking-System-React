@@ -10,7 +10,7 @@ import Footer from "../../components/layout/Footer";
 
 const Homepage: React.FC = () => {
   return (
-    <div className="bg-linear-to-br from-stone-50 via-amber-50 to-rose-50">
+    <div className="-mb-20 bg-linear-to-br from-stone-50 via-amber-50 to-rose-50">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
         
