@@ -7,7 +7,8 @@ import {
   X,
   Stethoscope,
   CalendarIcon,
-  TimerIcon
+  TimerIcon,
+  CheckCircleIcon
 } from "lucide-react";
 import {
   ScheduleProps,
@@ -17,11 +18,23 @@ import { useDoctor } from "../../../features/doctor/useDoctors";
 import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import Select from "../../../components/common/Select";
-
+import Label from "../../../components/common/Label";
+import { NotificationProps } from "../../../notification/Notification";
+import { Alert, Snackbar } from "@mui/material";
+import SlideTransitions from "../../../slide/SlideTransition";
+import ErrorIcon from "@mui/icons-material/Error";
 export default function ScheduleAdminPage() {
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
-  const { data: schedule = [] } = useSchedule();
+  const [workDate, setWorkDate] = React.useState<string>("");
+  const [startTime, setStartTime] = React.useState<string>("");
+  const [endTime, setEndTime] = React.useState<string>("");
+  const [notification, setNotification] = React.useState<NotificationProps>({
+    open: false,
+    message: "",
+    severity: "success"
+  });
+  const { data: schedule = [], createSchedule } = useSchedule();
   const { data: doctor = [] } = useDoctor();
   const doctorOptions = doctor.map((d) => ({
     label: `${d.name} - ${d.specialty}`,
@@ -35,25 +48,50 @@ export default function ScheduleAdminPage() {
       year: "numeric"
     });
   };
-
-  const formatTime = (timeStr: string) => {
-    const time = new Date(timeStr);
-    return time.toLocaleTimeString("vi-VN", {
+  const handleClose = () => {
+    setNotification((prev) => ({ ...prev, open: false }));
+  };
+  const formatTime = (timeStr: string, workDateStr: string) => {
+    const date = new Date(`${workDateStr}T${timeStr}`);
+    return date.toLocaleTimeString("vi-VN", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false
     });
   };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      createSchedule(
+        { doctorId: selectedDoctorId, workDate, startTime, endTime },
+        {
+          onSuccess: () => {
+            setNotification({
+              open: true,
+              message: "Tạo thời gian biểu thành công",
+              severity: "success"
+            });
+          },
+          onError: (err) => {
+            console.log("Tạo thời gian biểu thất bại", err);
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  const getDurationFormatted = (schedule: ScheduleProps): string => {
+    const [startH, startM] = schedule.startTime.split(":").map(Number);
+    const [endH, endM] = schedule.endTime.split(":").map(Number);
 
-  const getDuration = (schedule: ScheduleProps): number => {
-    const start = new Date(schedule.startTime);
-    const end = new Date(schedule.endTime);
+    const durationMinutes = endH * 60 + endM - (startH * 60 + startM);
+    if (durationMinutes <= 0) return "0h 0m";
 
-    const diffMs = end.getTime() - start.getTime();
+    const hours = Math.floor(durationMinutes / 60);
+    const minutes = durationMinutes % 60;
 
-    if (isNaN(diffMs) || diffMs <= 0) return 0;
-
-    return Number((diffMs / (1000 * 60 * 60)).toFixed(1)); // 1.5h
+    return `${hours}h ${minutes}m`;
   };
 
   const filteredschedule = schedule.filter((sch: ScheduleProps) => {
@@ -210,7 +248,7 @@ export default function ScheduleAdminPage() {
                           {formatDate(schedule.workDate)}
                         </div>
                         <div className="text-lg font-bold text-blue-600">
-                          {getDuration(schedule)}h
+                          {getDurationFormatted(schedule)}
                         </div>
                         <div className="text-xs text-gray-500 mt-1">ca làm</div>
                       </div>
@@ -227,16 +265,17 @@ export default function ScheduleAdminPage() {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="ml-5 flex items-center gap-4 text-sm text-gray-600">
                           <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4" />
                             <span className="font-medium">
-                              {formatTime(schedule.startTime)} -{" "}
-                              {formatTime(schedule.endTime)}
+                              {formatTime(
+                                schedule.startTime,
+                                schedule.workDate
+                              )}{" "}
+                              -{" "}
+                              {formatTime(schedule.endTime, schedule.workDate)}
                             </span>
-                          </div>
-                          <div className="text-xs bg-gray-100 px-3 py-1 rounded-full">
-                            ID: {schedule.id.substring(0, 8)}...
                           </div>
                         </div>
                       </div>
@@ -284,14 +323,11 @@ export default function ScheduleAdminPage() {
               </Button>
             </div>
 
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Chọn bác sĩ
-                </label>
+                <Label htmlFor="doctorId">Chọn bác sĩ</Label>
                 <Select
                   id="doctorId"
-                  label="Chọn bác sĩ"
                   placeholder="-- Chọn bác sĩ --"
                   options={doctorOptions}
                   value={selectedDoctorId}
@@ -300,32 +336,29 @@ export default function ScheduleAdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Ngày làm việc
-                </label>
+                <Label htmlFor="WorkDate">Ngày làm việc</Label>
                 <Input
                   icon={<CalendarIcon size={18} />}
                   type="date"
+                  onChange={(e) => setWorkDate(e.target.value)}
                   className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Giờ bắt đầu
-                  </label>
+                  <Label htmlFor="StartTime">Giờ bắt đầu</Label>
                   <Input
                     icon={<TimerIcon size={18} />}
                     type="time"
+                    onChange={(e) => setStartTime(e.target.value)}
                     className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Giờ kết thúc
-                  </label>
+                  <Label htmlFor="EndTime">Giờ kết thúc</Label>
                   <Input
+                    onChange={(e) => setEndTime(e.target.value)}
                     icon={<TimerIcon size={18} />}
                     type="time"
                     className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
@@ -343,6 +376,39 @@ export default function ScheduleAdminPage() {
           </div>
         </div>
       )}
+      <Snackbar
+        open={notification.open}
+        onClose={handleClose}
+        TransitionComponent={SlideTransitions}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={4000}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={notification.severity}
+          variant="filled"
+          iconMapping={{
+            success: <CheckCircleIcon fontSize="small" />,
+            error: <ErrorIcon fontSize="small" />
+          }}
+          sx={{
+            width: "100%",
+            bgcolor:
+              notification.severity === "success" ? "#4caf50" : "#f44336",
+            color: "white",
+            fontWeight: "bold",
+            borderRadius: "12px",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.2)",
+            px: 2,
+            py: 1.5,
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
