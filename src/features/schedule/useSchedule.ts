@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ScheduleApi } from "./api";
+import { queryClient } from "../../queries/queryClient";
 export interface ScheduleProps {
   id: string;
   doctorId: string;
@@ -8,7 +9,7 @@ export interface ScheduleProps {
   endTime: string;
 }
 export function useSchedule() {
-  return useQuery<ScheduleProps[]>({
+  const scheduleQuery = useQuery<ScheduleProps[]>({
     queryKey: ["schedules"],
     queryFn: async () => {
       try {
@@ -19,4 +20,17 @@ export function useSchedule() {
       }
     }
   });
+  const createScheduleMutation = useMutation({
+    mutationFn: ScheduleApi.createSchedule,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["schedules"] });
+    }
+  });
+  return {
+    ...scheduleQuery,
+    createSchedule: createScheduleMutation.mutate,
+    createScheduleAsync: createScheduleMutation.mutateAsync,
+    isCreating: createScheduleMutation.isPending,
+    createError: createScheduleMutation.error
+  };
 }
