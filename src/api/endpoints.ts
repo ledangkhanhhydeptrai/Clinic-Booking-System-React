@@ -14,5 +14,8 @@ export const API = {
   },
   PROFILE: {
     PROFILE: "profile"
+  },
+  SCHEDULE: {
+    SCHEDULE: "schedules"
   }
 };

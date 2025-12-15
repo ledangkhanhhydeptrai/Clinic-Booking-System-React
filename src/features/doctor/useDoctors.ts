@@ -8,7 +8,7 @@ export interface DataDoctor {
   name: string;
 }
 export function useDoctor(id?: string) {
-  const doctorQuery = useQuery({
+  const doctorQuery = useQuery<DataDoctor[]>({
     queryKey: id ? ["doctor", id] : ["doctors"],
     queryFn: async () => {
       if (id) {

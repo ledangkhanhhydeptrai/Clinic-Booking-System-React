@@ -22,10 +22,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginRequest: (
-      state,
-      action: PayloadAction<LoginPayload>
-    ) => {
+    loginRequest: (state, action: PayloadAction<LoginPayload>) => {
       state.isLoading = true;
       state.user = action.payload;
     },
