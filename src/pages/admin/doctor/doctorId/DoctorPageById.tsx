@@ -1,12 +1,12 @@
 import { Phone, Stethoscope, User } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { useDoctor } from "../../../../features/doctor/useDoctors";
+import { useDoctorById } from "../../../../features/doctor/useDoctors";
 
 export default function DoctorPageById() {
   const { id } = useParams<{ id: string }>();
 
   // Simulate API call
-  const { data: doctor, isLoading } = useDoctor(id);
+  const { data: doctor, isLoading } = useDoctorById(String(id));
   if (!id) return <div>Doctor ID không hợp lệ</div>;
   if (isLoading || !doctor) {
     return (
@@ -122,7 +122,7 @@ export default function DoctorPageById() {
           <h1 className="text-sm font-medium text-teal-600 tracking-widest uppercase mb-2">
             Thông Tin Bác Sĩ
           </h1>
-          <div className="w-24 h-1 bg-linear-to-r from-teal-400 to-cyan-400 mx-auto rounded-full"></div>
+          <div className="w-24 h-1 bg-linear-to-r from-teal-400 to-cyan-400 mx-auto rounded-full" />
         </div>
 
         {/* Main Card */}
