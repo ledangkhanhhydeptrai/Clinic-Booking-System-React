@@ -7,20 +7,14 @@ export interface DataDoctor {
   phone: string;
   name: string;
 }
-export function useDoctor(id?: string) {
-  const doctorQuery = useQuery({
-    queryKey: id ? ["doctor", id] : ["doctors"],
+export function useDoctor() {
+  const doctorQuery = useQuery<DataDoctor[]>({
+    queryKey: ["doctors"],
     queryFn: async () => {
-      if (id) {
-        const res = await DoctorAPI.getDoctorById(id);
-        return res.data.data; // 1 doctor
-      } else {
-        const res = await DoctorAPI.getAllDoctor();
-        return res.data.data; // list doctor
-      }
+      const res = await DoctorAPI.getAllDoctor();
+      return res.data.data;
     },
-    retry: false,
-    enabled: id !== "" // tránh call API với id rỗng
+    retry: false
   });
 
   // CREATE doctor
@@ -76,4 +70,16 @@ export function useDoctor(id?: string) {
     isDeleting: deleteDoctorMutation.isPending,
     deleteError: deleteDoctorMutation.error
   };
+}
+export function useDoctorById(id: string) {
+  return useQuery<DataDoctor>({
+    queryKey: ["doctor", id],
+    queryFn: async () => {
+      if (!id) throw new Error("Invalid doctor id");
+      const res = await DoctorAPI.getDoctorById(id);
+      return res.data.data;
+    },
+    enabled: !!id,
+    retry: false
+  });
 }

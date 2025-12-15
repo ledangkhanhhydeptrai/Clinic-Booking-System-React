@@ -7,8 +7,33 @@ import TestimonialsSection from "./components/TestimonialsSection";
 import CTASection from "./components/CTASection";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
-
+import { useLocation } from "react-router-dom";
+import { NotificationProps } from "../../notification/Notification";
+import { Alert, Snackbar } from "@mui/material";
+import { CheckCircleIcon } from "lucide-react";
+import ErrorIcon from "@mui/icons-material/Error";
+import SlideTransitions from "../../slide/SlideTransition";
+import { LoginState } from "../../types/routeState";
 const Homepage: React.FC = () => {
+  const [notification, setNotification] = React.useState<NotificationProps>({
+    open: false,
+    message: "",
+    severity: "success"
+  });
+  const location = useLocation();
+  const handleClose = () => {
+    setNotification((prev) => ({ ...prev, open: false }));
+  };
+  React.useEffect(() => {
+    const state = location.state as LoginState | null;
+    if (state !== null && state.loginSuccess) {
+      setNotification({
+        open: true,
+        message: "Đăng nhập thành công",
+        severity: "success"
+      });
+    }
+  }, [location]);
   return (
     <div className="-mt-20 -mb-20 bg-linear-to-br from-stone-50 via-amber-50 to-rose-50">
       <style>{`
@@ -108,6 +133,39 @@ const Homepage: React.FC = () => {
       <TestimonialsSection />
       <CTASection />
       <Footer />
+      <Snackbar
+        open={notification.open}
+        onClose={handleClose}
+        TransitionComponent={SlideTransitions}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={4000}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={notification.severity}
+          variant="filled"
+          iconMapping={{
+            success: <CheckCircleIcon fontSize="small" />,
+            error: <ErrorIcon fontSize="small" />
+          }}
+          sx={{
+            width: "100%",
+            bgcolor:
+              notification.severity === "success" ? "#4caf50" : "#f44336",
+            color: "white",
+            fontWeight: "bold",
+            borderRadius: "12px",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.2)",
+            px: 2,
+            py: 1.5,
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

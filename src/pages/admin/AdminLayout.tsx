@@ -59,7 +59,7 @@ const AdminLayout: React.FC = () => {
       label: "Lịch hẹn",
       icon: Calendar,
       badge: null,
-      path: "/admin/dashboard"
+      path: "/admin/schedule"
     },
     {
       id: "records",
