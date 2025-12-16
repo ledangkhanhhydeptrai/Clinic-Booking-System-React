@@ -245,8 +245,8 @@ const Header: React.FC = () => {
             {/* Desktop Navigation - Improved typography and spacing */}
             <nav className="hidden lg:flex items-center space-x-1 flex-1 justify-center mx-12">
               {[
-                { name: "Trang chủ", href: "#" },
-                { name: "Đặt lịch", href: "#" },
+                { name: "Trang chủ", href: "/" },
+                { name: "Đặt lịch", href: "/user/schedule" },
                 { name: "Bác sĩ", href: "#" },
                 { name: "Chuyên khoa", href: "#" },
                 { name: "Liên hệ", href: "#" }

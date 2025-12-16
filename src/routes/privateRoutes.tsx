@@ -4,6 +4,7 @@ import ScheduleAdminPage from "../pages/admin/schedule/ScheduleAdminPage";
 import UserPage from "../pages/admin/user/UserPage";
 import Homepage from "../pages/home/Homepage";
 import ProfilePage from "../pages/profile/ProfilePage";
+import SchedulePage from "../pages/schedule/SchedulePage";
 
 export const privateRoutes = [
   { path: "/", element: <Homepage />, role: "USER" },
@@ -15,5 +16,6 @@ export const privateRoutes = [
     role: "ADMIN"
   },
   { path: "/admin/user", element: <UserPage />, role: "ADMIN" },
-  { path: "/admin/schedule", element: <ScheduleAdminPage />, role: "ADMIN" }
+  { path: "/admin/schedule", element: <ScheduleAdminPage />, role: "ADMIN" },
+  { path: "/user/schedule", element: <SchedulePage />, role: "USER" }
 ];
