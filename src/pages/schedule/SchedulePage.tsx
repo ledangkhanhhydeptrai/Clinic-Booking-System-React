@@ -7,16 +7,16 @@ import {
   Edit2,
   Trash2,
   Search,
-  Filter,
   ChevronRight,
   CalendarCheck,
   Loader2
 } from "lucide-react";
 import { useSchedule } from "../../features/schedule/useSchedule";
 import Button from "../../components/common/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function SchedulePage() {
-  const [activeTab, setActiveTab] = React.useState("week");
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState("");
   const { data: schedules = [], isLoading } = useSchedule();
   const displaySchedules = React.useMemo(() => {
@@ -100,50 +100,6 @@ export default function SchedulePage() {
                 className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
               />
             </div>
-            <Button
-              isLoading={false}
-              className="px-4 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2"
-            >
-              <Filter className="w-5 h-5 text-slate-600" />
-              <span className="text-slate-700 font-medium">Lọc</span>
-            </Button>
-          </div>
-
-          {/* Tabs */}
-          <div className="mt-6 flex gap-2 bg-slate-100/80 p-1.5 rounded-xl w-fit">
-            <Button
-              isLoading={false}
-              onClick={() => setActiveTab("week")}
-              className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-200 ${
-                activeTab === "week"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Tuần này
-            </Button>
-            <Button
-              isLoading={false}
-              onClick={() => setActiveTab("month")}
-              className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-200 ${
-                activeTab === "month"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Tháng này
-            </Button>
-            <Button
-              isLoading={false}
-              onClick={() => setActiveTab("all")}
-              className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-200 ${
-                activeTab === "all"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Tất cả
-            </Button>
           </div>
         </div>
       </div>
@@ -323,6 +279,7 @@ export default function SchedulePage() {
                           </Button>
                           <Button
                             isLoading={false}
+                            onClick={()=>navigate("/user/appointment")}
                             className="flex-1 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
                           >
                             <CalendarCheck className="w-4 h-4" />

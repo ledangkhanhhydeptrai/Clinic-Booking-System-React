@@ -17,5 +17,8 @@ export const API = {
   },
   SCHEDULE: {
     SCHEDULE: "schedules"
+  },
+  APPOINTMENT: {
+    APPOINTMENT: "appointment"
   }
 };

@@ -2,6 +2,7 @@ import DoctorPageById from "../pages/admin/doctor/doctorId/DoctorPageById";
 import DoctorPage from "../pages/admin/doctor/DoctorPage";
 import ScheduleAdminPage from "../pages/admin/schedule/ScheduleAdminPage";
 import UserPage from "../pages/admin/user/UserPage";
+import AppointmentPage from "../pages/appointment/appointmentPage";
 import Homepage from "../pages/home/Homepage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import SchedulePage from "../pages/schedule/SchedulePage";
@@ -17,5 +18,6 @@ export const privateRoutes = [
   },
   { path: "/admin/user", element: <UserPage />, role: "ADMIN" },
   { path: "/admin/schedule", element: <ScheduleAdminPage />, role: "ADMIN" },
-  { path: "/user/schedule", element: <SchedulePage />, role: "USER" }
+  { path: "/user/schedule", element: <SchedulePage />, role: "USER" },
+  { path: "/user/appointment", element: <AppointmentPage />, role: "USER" }
 ];
