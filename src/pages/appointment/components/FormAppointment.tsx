@@ -11,104 +11,84 @@ import {
 } from "lucide-react";
 import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
-interface FormData {
+import { DataDoctor } from "../../../features/doctor/useDoctors";
+import { PatientProps } from "../../../features/user/useUser";
+import { ScheduleProps } from "../../../features/schedule/useSchedule";
+
+interface FormAppointmentProps {
+  onClose: () => void;
+
   patientId: string;
+
   doctorId: string;
+  setDoctorId: (value: string) => void;
+
   appointmentDate: string;
+  setAppointmentDate: (value: string) => void;
+
   appointmentTime: string;
-  status: "PENDING" | "CONFIRMED" | "DONE";
+  setAppointmentTime: (value: string) => void;
+
   scheduleId: string;
+  setScheduleId: (value: string) => void;
+
+  doctors: DataDoctor[];
+  patient: PatientProps[];
+  schedule: ScheduleProps[];
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export default function FormAppointment({ onClose }: { onClose: () => void }) {
-  const [formData, setFormData] = useState<FormData>({
-    patientId: "3fa85f64-5717-4562-b3fc-2c963f66afa6", // Auto-filled if logged in
-    doctorId: "",
-    appointmentDate: "",
-    appointmentTime: "",
-    status: "PENDING",
-    scheduleId: ""
-  });
-
+export default function FormAppointment({
+  onClose,
+  patientId,
+  doctorId,
+  setDoctorId,
+  appointmentDate,
+  setAppointmentDate,
+  appointmentTime,
+  setAppointmentTime,
+  scheduleId,
+  setScheduleId,
+  schedule,
+  doctors,
+  patient,
+  onSubmit
+}: FormAppointmentProps) {
+  console.log({
+  patientId,
+  doctorId,
+  appointmentDate,
+  appointmentTime,
+  scheduleId
+});
   const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Mock data - replace with actual API calls
-  const doctors = [
-    {
-      id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      name: "Dr. Nguyễn Văn A",
-      specialty: "Tim mạch",
-      avatar: "👨‍⚕️"
-    },
-    {
-      id: "4fa85f64-5717-4562-b3fc-2c963f66afa7",
-      name: "Dr. Trần Thị B",
-      specialty: "Da liễu",
-      avatar: "👩‍⚕️"
-    },
-    {
-      id: "5fa85f64-5717-4562-b3fc-2c963f66afa8",
-      name: "Dr. Lê Minh C",
-      specialty: "Nội khoa",
-      avatar: "👨‍⚕️"
-    },
-    {
-      id: "6fa85f64-5717-4562-b3fc-2c963f66afa9",
-      name: "Dr. Phạm Hồng D",
-      specialty: "Nhi khoa",
-      avatar: "👩‍⚕️"
-    }
-  ];
-
-  const availableTimes = [
-    "08:00",
-    "08:30",
-    "09:00",
-    "09:30",
-    "10:00",
-    "10:30",
-    "13:30",
-    "14:00",
-    "14:30",
-    "15:00",
-    "15:30",
-    "16:00"
-  ];
-
-  const handleChange = <K extends keyof FormData>(
-    field: K,
-    value: FormData[K]
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Form submitted:", formData);
-      setIsSubmitting(false);
-      // Show success message or redirect
-    }, 2000);
-  };
+  if (!doctors) {
+    return (
+      <div className="flex items-center justify-center h-[400px]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin" />
+          <p className="text-gray-500 font-medium">
+            Đang tải danh sách bác sĩ...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const isStepComplete = (step: number) => {
-    if (step === 1) return formData.doctorId !== "";
-    if (step === 2) return formData.appointmentDate !== "";
-    if (step === 3) return formData.appointmentTime !== "";
+    if (step === 1) return doctorId !== "";
+    if (step === 2) return appointmentDate !== "";
+    if (step === 3) return appointmentTime !== "" && scheduleId !== "";
     return false;
   };
 
   const canProceed = () => {
-    if (currentStep === 1) return formData.doctorId !== "";
-    if (currentStep === 2) return formData.appointmentDate !== "";
-    if (currentStep === 3) return formData.appointmentTime !== "";
+    if (currentStep === 1) return doctorId !== "";
+    if (currentStep === 2) return appointmentDate !== "";
+    if (currentStep === 3) return appointmentTime !== "" && scheduleId !== "";
     return false;
   };
-
+  const currentPatient = patient.find((p) => p.id === patientId);
   return (
     <div className="min-h-screen bg-linear-to-br from-violet-50 via-purple-50 to-fuchsia-50 py-12 px-4">
       <style>{`
@@ -262,6 +242,14 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
             Đặt lịch hẹn
           </h1>
+          {currentPatient && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full">
+              <span className="text-sm text-purple-700">👤 Bệnh nhân:</span>
+              <span className="font-semibold text-purple-900">
+                {currentPatient.fullName}
+              </span>
+            </div>
+          )}
           <p className="text-lg text-gray-600">
             Chọn bác sĩ và thời gian phù hợp với bạn
           </p>
@@ -324,7 +312,7 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
         {/* Form Card */}
         <div className="gradient-border animate-scale-in">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 relative z-10">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={onSubmit}>
               {/* Step 1: Choose Doctor */}
               {currentStep === 1 && (
                 <div className="animate-fade-in">
@@ -340,19 +328,18 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                     {doctors.map((doctor) => (
                       <div
                         key={doctor.id}
-                        onClick={() => handleChange("doctorId", doctor.id)}
+                        onClick={() => setDoctorId(doctor.id)}
                         className={`doctor-card p-6 rounded-2xl border-2 ${
-                          formData.doctorId === doctor.id
+                          doctorId === doctor.id
                             ? "selected border-transparent"
                             : "border-gray-200 bg-white"
                         }`}
                       >
                         <div className="flex items-start gap-4">
-                          <div className="text-4xl">{doctor.avatar}</div>
                           <div className="flex-1">
                             <h3
                               className={`font-semibold text-lg mb-1 ${
-                                formData.doctorId === doctor.id
+                                doctorId === doctor.id
                                   ? "text-white"
                                   : "text-gray-900"
                               }`}
@@ -361,7 +348,7 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                             </h3>
                             <p
                               className={`text-sm ${
-                                formData.doctorId === doctor.id
+                                doctorId === doctor.id
                                   ? "text-purple-100"
                                   : "text-gray-600"
                               }`}
@@ -369,7 +356,7 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                               {doctor.specialty}
                             </p>
                           </div>
-                          {formData.doctorId === doctor.id && (
+                          {doctorId === doctor.id && (
                             <CheckCircle className="w-6 h-6 text-white" />
                           )}
                         </div>
@@ -394,29 +381,28 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                     <Input
                       icon={<CalendarRange />}
                       type="date"
-                      value={formData.appointmentDate}
-                      onChange={(e) =>
-                        handleChange("appointmentDate", e.target.value)
-                      }
+                      value={appointmentDate}
+                      onChange={(e) => setAppointmentDate(e.target.value)}
                       min={new Date().toISOString().split("T")[0]}
                       className="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
                       required
                     />
 
-                    {formData.appointmentDate && (
+                    {appointmentDate && (
                       <div className="mt-6 p-6 bg-purple-50 rounded-2xl animate-scale-in">
                         <p className="text-sm text-purple-600 font-medium mb-1">
                           Ngày đã chọn
                         </p>
                         <p className="text-xl font-semibold text-purple-900">
-                          {new Date(
-                            formData.appointmentDate
-                          ).toLocaleDateString("vi-VN", {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric"
-                          })}
+                          {new Date(appointmentDate).toLocaleDateString(
+                            "vi-VN",
+                            {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric"
+                            }
+                          )}
                         </p>
                       </div>
                     )}
@@ -434,27 +420,29 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                   <p className="text-gray-600 mb-8">
                     Chọn khung giờ phù hợp với bạn
                   </p>
-
                   <div className="mb-8">
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-                      {availableTimes.map((time) => (
+                      {schedule.map((slot) => (
                         <button
-                          key={time}
+                          key={slot.id}
                           type="button"
-                          onClick={() => handleChange("appointmentTime", time)}
+                          onClick={() => {
+                            setAppointmentTime(slot.startTime);
+                            setScheduleId(slot.id)
+                          }}
                           className={`time-slot px-4 py-4 rounded-xl border-2 font-semibold transition-all ${
-                            formData.appointmentTime === time
+                            appointmentTime === slot.startTime
                               ? "selected border-transparent"
                               : "border-gray-200 bg-white text-gray-700 hover:border-purple-300"
                           }`}
                         >
-                          <div className="code text-sm">{time}</div>
+                          <div className="code text-sm">{slot.startTime}</div>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {formData.appointmentTime && (
+                  {appointmentTime && (
                     <div className="p-6 bg-linear-to-br from-purple-50 to-fuchsia-50 rounded-2xl border-2 border-purple-200 animate-scale-in">
                       <h3 className="font-semibold text-purple-900 mb-4 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-purple-600" />
@@ -464,33 +452,27 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                         <div className="flex justify-between">
                           <span className="text-gray-600">Bác sĩ:</span>
                           <span className="font-semibold text-gray-900">
-                            {
-                              doctors.find((d) => d.id === formData.doctorId)
-                                ?.name
-                            }
+                            {doctors.find((d) => d.id === doctorId)?.name}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Chuyên khoa:</span>
                           <span className="font-semibold text-gray-900">
-                            {
-                              doctors.find((d) => d.id === formData.doctorId)
-                                ?.specialty
-                            }
+                            {doctors.find((d) => d.id === doctorId)?.specialty}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Ngày khám:</span>
                           <span className="font-semibold text-gray-900 code">
-                            {new Date(
-                              formData.appointmentDate
-                            ).toLocaleDateString("vi-VN")}
+                            {new Date(appointmentDate).toLocaleDateString(
+                              "vi-VN"
+                            )}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Giờ khám:</span>
                           <span className="font-semibold text-gray-900 code">
-                            {formData.appointmentTime}
+                            {appointmentTime}
                           </span>
                         </div>
                       </div>
@@ -520,7 +502,7 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                     disabled={!canProceed()}
                     className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
                       canProceed()
-                        ? "bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white shadow-lg hover:shadow-xl"
+                        ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white shadow-lg"
                         : "bg-gray-200 text-gray-400 cursor-not-allowed"
                     }`}
                   >
@@ -530,24 +512,15 @@ export default function FormAppointment({ onClose }: { onClose: () => void }) {
                 ) : (
                   <button
                     type="submit"
-                    disabled={!canProceed() || isSubmitting}
+                    disabled={!canProceed()}
                     className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
-                      canProceed() && !isSubmitting
-                        ? "bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white shadow-lg hover:shadow-xl"
+                      canProceed()
+                        ? "bg-linear-to-r from-emerald-600 to-green-600 text-white shadow-lg hover:shadow-xl"
                         : "bg-gray-200 text-gray-400 cursor-not-allowed"
                     }`}
                   >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Đang xử lý...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-5 h-5" />
-                        Xác nhận đặt lịch
-                      </>
-                    )}
+                    <CheckCircle className="w-5 h-5" />
+                    Xác nhận đặt lịch
                   </button>
                 )}
               </div>

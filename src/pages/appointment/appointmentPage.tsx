@@ -5,7 +5,8 @@ import {
   User,
   XCircle,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  CheckCircleIcon
 } from "lucide-react";
 import {
   AppointmentStatus,
@@ -13,12 +14,31 @@ import {
 } from "../../features/appointment/useAppointment";
 import FormAppointment from "./components/FormAppointment";
 import Button from "../../components/common/Button";
-
+import { useDoctor } from "../../features/doctor/useDoctors";
+import { NotificationProps } from "../../notification/Notification";
+import { useUser } from "../../features/user/useUser";
+import { Alert, Snackbar } from "@mui/material";
+import SlideTransitions from "../../slide/SlideTransition";
+import ErrorIcon from "@mui/icons-material/Error";
+import { useSchedule } from "../../features/schedule/useSchedule";
 export default function AppointmentPage() {
   // Mock data - replace with actual API call
-  const { data: appointments = [] } = useAppointment();
+  const { data: appointments = [], createAppointment } = useAppointment();
+  const { data: doctors = [] } = useDoctor();
+  const { data: patient = [] } = useUser();
+  const currentPatient = patient[0]; // vì user chỉ có 1 patient
   const [filter, setFilter] = React.useState("ALL");
-  const [showForm, setShowForm] = React.useState<boolean>(false); // state mở form
+  const [showForm, setShowForm] = React.useState<boolean>(false);
+  const [doctorId, setDoctorId] = React.useState<string>("");
+  const { data: schedule = [] } = useSchedule();
+  const [appointmentDate, setAppointmentDate] = React.useState<string>("");
+  const [appointmentTime, setAppointmentTime] = React.useState<string>("");
+  const [scheduleId, setScheduleId] = React.useState<string>("");
+  const [notification, setNotification] = React.useState<NotificationProps>({
+    open: false,
+    message: "",
+    severity: "success"
+  });
   const getStatusConfig = (status: AppointmentStatus) => {
     const configs = {
       PENDING: {
@@ -42,7 +62,9 @@ export default function AppointmentPage() {
     };
     return configs[status] || configs.PENDING;
   };
-
+  const handleClose = () => {
+    setNotification((prev) => ({ ...prev, open: false }));
+  };
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("vi-VN", {
@@ -61,7 +83,39 @@ export default function AppointmentPage() {
   const upcomingCount = appointments.filter(
     (apt) => apt.status === "PENDING" || apt.status === "CONFIRMED"
   ).length;
-
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      createAppointment(
+        {
+          patientId: currentPatient.id,
+          doctorId,
+          appointmentDate,
+          appointmentTime,
+          scheduleId
+        },
+        {
+          onSuccess: () => {
+            setNotification({
+              open: true,
+              message: "Tạo lịch hẹn thành công",
+              severity: "success"
+            });
+          },
+          onError: (err) => {
+            console.error("Error:", err);
+            setNotification({
+              open: true,
+              message: "Tạo lịch hẹn thất bại",
+              severity: "success"
+            });
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
       <style>{`
@@ -345,10 +399,58 @@ export default function AppointmentPage() {
             className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] p-6 md:p-12 overflow-y-auto animate-scale-in relative"
             onClick={(e) => e.stopPropagation()} // tránh click trong form bị đóng
           >
-            <FormAppointment onClose={() => setShowForm(false)} />
+            <FormAppointment
+              patientId={currentPatient.id}
+              doctorId={doctorId}
+              setDoctorId={setDoctorId}
+              appointmentDate={appointmentDate}
+              setAppointmentDate={setAppointmentDate}
+              appointmentTime={appointmentTime}
+              setAppointmentTime={setAppointmentTime}
+              scheduleId={scheduleId}
+              setScheduleId={setScheduleId}
+              onSubmit={handleSubmit}
+              doctors={doctors}
+              patient={patient}
+              schedule={schedule}
+              onClose={() => setShowForm(false)}
+            />
           </div>
         </div>
       )}
+      <Snackbar
+        open={notification.open}
+        onClose={handleClose}
+        TransitionComponent={SlideTransitions}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={4000}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={notification.severity}
+          variant="filled"
+          iconMapping={{
+            success: <CheckCircleIcon fontSize="small" />,
+            error: <ErrorIcon fontSize="small" />
+          }}
+          sx={{
+            width: "100%",
+            bgcolor:
+              notification.severity === "success" ? "#4caf50" : "#f44336",
+            color: "white",
+            fontWeight: "bold",
+            borderRadius: "12px",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.2)",
+            px: 2,
+            py: 1.5,
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

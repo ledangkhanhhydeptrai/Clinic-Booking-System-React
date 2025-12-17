@@ -7,7 +7,7 @@ export interface PatientProps {
   dob: string;
 }
 export function useUser() {
-  const userQuery = useQuery({
+  const userQuery = useQuery<PatientProps[]>({
     queryKey: ["user"],
     queryFn: async () => {
       const res = await UserApi.getAllUser();
