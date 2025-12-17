@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AppointmentApi } from "./api";
+import { queryClient } from "../../queries/queryClient";
 export type AppointmentStatus = "PENDING" | "CONFIRMED" | "DONE";
 interface AppointmentProps {
   id: string;
@@ -8,8 +9,8 @@ interface AppointmentProps {
   appointmentDate: string;
   appointmentTime: string;
   status: AppointmentStatus;
-  doctorName:string;
-  specialty:string;
+  doctorName: string;
+  specialty: string;
   scheduleId: string;
 }
 export const useAppointment = () => {
@@ -20,7 +21,17 @@ export const useAppointment = () => {
       return response.data.data;
     }
   });
+  const createAppointmentQuery = useMutation({
+    mutationFn: AppointmentApi.createAppointment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+    }
+  });
   return {
-    ...appointmentQuery
+    ...appointmentQuery,
+    createAppointment: createAppointmentQuery.mutate,
+    createAppointmentAsync: createAppointmentQuery.mutateAsync,
+    isCreating: createAppointmentQuery.isPending,
+    createError: createAppointmentQuery.error
   };
 };
