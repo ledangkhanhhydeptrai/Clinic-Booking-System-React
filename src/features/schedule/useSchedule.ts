@@ -9,7 +9,7 @@ export interface ScheduleProps {
   totalSlots: number;
   bookedSlots: number;
   scheduleStatus: ScheduleStatus;
-  specialty:string;
+  specialty: string;
   workDate: string;
   startTime: string;
   endTime: string;

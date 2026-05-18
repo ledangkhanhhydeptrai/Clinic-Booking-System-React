@@ -19,21 +19,24 @@ export default function SchedulePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState("");
   const { data: schedules = [], isLoading } = useSchedule();
-  const displaySchedules = React.useMemo(() => {
-    // Filter by search
-    if (searchQuery) {
-      return schedules.filter(
-        (s) =>
-          s.doctorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.specialty.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  const displaySchedules = React.useMemo(
+    () => {
+      // Filter by search
+      if (searchQuery) {
+        return schedules.filter(
+          s =>
+            s.doctorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            s.specialty.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
 
-    return schedules;
-  }, [schedules, searchQuery]);
+      return schedules;
+    },
+    [schedules, searchQuery]
+  );
 
   const getAvailabilityColor = (bookedSlots: number, totalSlots: number) => {
-    const percentage = (bookedSlots / totalSlots) * 100;
+    const percentage = bookedSlots / totalSlots * 100;
     if (percentage === 0)
       return "bg-emerald-50 text-emerald-700 border-emerald-200";
     if (percentage < 50) return "bg-blue-50 text-blue-700 border-blue-200";
@@ -96,7 +99,7 @@ export default function SchedulePage() {
                 type="text"
                 placeholder="Tìm kiếm bác sĩ, chuyên khoa..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
               />
             </div>
@@ -130,7 +133,7 @@ export default function SchedulePage() {
               <div>
                 <p className="text-sm text-slate-600">Bác sĩ</p>
                 <p className="text-2xl font-bold text-slate-900">
-                  {new Set(displaySchedules.map((s) => s.doctorId)).size}
+                  {new Set(displaySchedules.map(s => s.doctorId)).size}
                 </p>
               </div>
             </div>
@@ -169,144 +172,139 @@ export default function SchedulePage() {
         </div>
 
         {/* Empty State */}
-        {displaySchedules.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-linear-to-br from-blue-100 to-rose-100 rounded-3xl mx-auto flex items-center justify-center mb-6">
-              <Calendar className="w-12 h-12 text-slate-400" />
+        {displaySchedules.length === 0
+          ? <div className="text-center py-16">
+              <div className="w-24 h-24 bg-linear-to-br from-blue-100 to-rose-100 rounded-3xl mx-auto flex items-center justify-center mb-6">
+                <Calendar className="w-12 h-12 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
+                Không có lịch làm việc
+              </h3>
+              <p className="text-slate-600 mb-6">
+                {searchQuery
+                  ? "Không tìm thấy lịch làm việc phù hợp"
+                  : "Chưa có lịch làm việc nào được tạo"}
+              </p>
+              {!searchQuery &&
+                <Button
+                  isLoading={false}
+                  className="px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
+                >
+                  Tạo lịch mới
+                </Button>}
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">
-              Không có lịch làm việc
-            </h3>
-            <p className="text-slate-600 mb-6">
-              {searchQuery
-                ? "Không tìm thấy lịch làm việc phù hợp"
-                : "Chưa có lịch làm việc nào được tạo"}
-            </p>
-            {!searchQuery && (
-              <Button
-                isLoading={false}
-                className="px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
-              >
-                Tạo lịch mới
-              </Button>
-            )}
-          </div>
-        ) : (
-          /* Schedule List */
-          <div className="grid gap-6">
-            {displaySchedules.map((schedule) => (
-              <div
-                key={schedule.id}
-                className={`group bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/60 overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
-                  schedule.scheduleStatus === "CANCELLED" ? "opacity-60" : ""
-                }`}
-              >
-                <div className="p-6">
-                  <div className="flex items-start gap-6">
-                    {/* Date Badge */}
+          : /* Schedule List */
+            <div className="grid gap-6">
+              {displaySchedules.map(schedule =>
+                <div
+                  key={schedule.id}
+                  className={`group bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200/60 overflow-hidden transition-all duration-300 hover:-translate-y-1 ${schedule.scheduleStatus ===
+                  "CANCELLED"
+                    ? "opacity-60"
+                    : ""}`}
+                >
+                  <div className="p-6">
+                    <div className="flex items-start gap-6">
+                      {/* Date Badge */}
 
-                    {/* Doctor Info */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <h3 className="text-lg font-bold text-slate-900">
-                              {schedule.doctorName}
-                            </h3>
-                            <p className="text-sm text-slate-500">
-                              {schedule.specialty}
-                            </p>
-                            <p className="text-xs text-slate-400 mt-1">
-                              ID: {schedule.doctorId.substring(0, 12)}...
-                            </p>
+                      {/* Doctor Info */}
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <h3 className="text-lg font-bold text-slate-900">
+                                {schedule.doctorName}
+                              </h3>
+                              <p className="text-sm text-slate-500">
+                                {schedule.specialty}
+                              </p>
+                              <p className="text-xs text-slate-400 mt-1">
+                                ID: {schedule.doctorId.substring(0, 12)}...
+                              </p>
+                            </div>
+                          </div>
+
+                          {schedule.scheduleStatus === "CANCELLED"
+                            ? <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                                Đã hủy
+                              </span>
+                            : <span
+                                className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${getAvailabilityColor(
+                                  schedule.bookedSlots,
+                                  schedule.totalSlots
+                                )}`}
+                              >
+                                {getAvailabilityText(
+                                  schedule.bookedSlots,
+                                  schedule.totalSlots
+                                )}
+                              </span>}
+                        </div>
+
+                        {/* Time and Slots Info */}
+                        <div className="flex items-center gap-6 mb-4">
+                          <div className="flex items-center gap-2 text-slate-700">
+                            <Clock className="w-5 h-5 text-blue-500" />
+                            <span className="font-semibold">
+                              {schedule.startTime} - {schedule.endTime}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-full bg-linear-to-r from-blue-500 to-rose-500 rounded-full transition-all duration-300" />
+                            </div>
+                            <span className="text-sm text-slate-600">
+                              {schedule.bookedSlots}/{schedule.totalSlots} slots
+                            </span>
                           </div>
                         </div>
 
-                        {schedule.scheduleStatus === "CANCELLED" ? (
-                          <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                            Đã hủy
-                          </span>
-                        ) : (
-                          <span
-                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${getAvailabilityColor(
-                              schedule.bookedSlots,
-                              schedule.totalSlots
-                            )}`}
-                          >
-                            {getAvailabilityText(
-                              schedule.bookedSlots,
-                              schedule.totalSlots
-                            )}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Time and Slots Info */}
-                      <div className="flex items-center gap-6 mb-4">
-                        <div className="flex items-center gap-2 text-slate-700">
-                          <Clock className="w-5 h-5 text-blue-500" />
-                          <span className="font-semibold">
-                            {schedule.startTime} - {schedule.endTime}
+                        {/* Work Date Display */}
+                        <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg">
+                          <Calendar className="w-4 h-4 text-slate-600" />
+                          <span className="text-sm text-slate-700 font-medium">
+                            {schedule.workDate}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-linear-to-r from-blue-500 to-rose-500 rounded-full transition-all duration-300" />
-                          </div>
-                          <span className="text-sm text-slate-600">
-                            {schedule.bookedSlots}/{schedule.totalSlots} slots
-                          </span>
-                        </div>
-                      </div>
 
-                      {/* Work Date Display */}
-                      <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg">
-                        <Calendar className="w-4 h-4 text-slate-600" />
-                        <span className="text-sm text-slate-700 font-medium">
-                          {schedule.workDate}
-                        </span>
+                        {/* Actions */}
+                        {schedule.scheduleStatus !== "CANCELLED" &&
+                          <div className="flex gap-3">
+                            <Button
+                              isLoading={false}
+                              className="flex-1 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                              Chỉnh sửa
+                            </Button>
+                            <Button
+                              isLoading={false}
+                              onClick={() => navigate("/user/appointment")}
+                              className="flex-1 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                            >
+                              <CalendarCheck className="w-4 h-4" />
+                              Xem lịch hẹn
+                            </Button>
+                            <Button
+                              isLoading={false}
+                              className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Hủy
+                            </Button>
+                            <Button
+                              isLoading={false}
+                              className="px-4 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all duration-200 shadow-lg shadow-blue-500/20"
+                            >
+                              <ChevronRight className="w-5 h-5" />
+                            </Button>
+                          </div>}
                       </div>
-
-                      {/* Actions */}
-                      {schedule.scheduleStatus !== "CANCELLED" && (
-                        <div className="flex gap-3">
-                          <Button
-                            isLoading={false}
-                            className="flex-1 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                            Chỉnh sửa
-                          </Button>
-                          <Button
-                            isLoading={false}
-                            onClick={()=>navigate("/user/appointment")}
-                            className="flex-1 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
-                          >
-                            <CalendarCheck className="w-4 h-4" />
-                            Xem lịch hẹn
-                          </Button>
-                          <Button
-                            isLoading={false}
-                            className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Hủy
-                          </Button>
-                          <Button
-                            isLoading={false}
-                            className="px-4 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all duration-200 shadow-lg shadow-blue-500/20"
-                          >
-                            <ChevronRight className="w-5 h-5" />
-                          </Button>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              )}
+            </div>}
       </div>
 
       <style>{`
