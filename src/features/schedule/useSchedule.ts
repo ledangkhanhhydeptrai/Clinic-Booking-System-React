@@ -1,7 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ScheduleApi } from "./api";
 import { queryClient } from "../../queries/queryClient";
-type ScheduleStatus = "ACTIVE" | "FULL" | "CANCELLED" | "COMPLETED" | "BLOCKED";
+export type ScheduleStatus =
+  | "ACTIVE"
+  | "FULL"
+  | "CANCELLED"
+  | "COMPLETED"
+  | "BLOCKED";
 export interface ScheduleProps {
   id: string;
   doctorId: string;

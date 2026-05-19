@@ -4,8 +4,6 @@ import {
   Clock,
   User,
   Plus,
-  Edit2,
-  Trash2,
   Search,
   ChevronRight,
   CalendarCheck,
@@ -272,25 +270,11 @@ export default function SchedulePage() {
                           <div className="flex gap-3">
                             <Button
                               isLoading={false}
-                              className="flex-1 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                              Chỉnh sửa
-                            </Button>
-                            <Button
-                              isLoading={false}
                               onClick={() => navigate("/user/appointment")}
                               className="flex-1 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
                             >
                               <CalendarCheck className="w-4 h-4" />
                               Xem lịch hẹn
-                            </Button>
-                            <Button
-                              isLoading={false}
-                              className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                              Hủy
                             </Button>
                             <Button
                               isLoading={false}
