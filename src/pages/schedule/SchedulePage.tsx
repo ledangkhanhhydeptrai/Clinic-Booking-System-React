@@ -3,7 +3,6 @@ import {
   Calendar,
   Clock,
   User,
-  Plus,
   Search,
   ChevronRight,
   CalendarCheck,
@@ -77,16 +76,6 @@ export default function SchedulePage() {
                 Lịch trình làm việc của các bác sĩ
               </p>
             </div>
-            <Button
-              isLoading={false}
-              className="group relative px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <span className="flex items-center gap-2">
-                <Plus className="w-5 h-5" />
-                Tạo lịch mới
-              </span>
-              <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </Button>
           </div>
 
           {/* Search and Filter */}
@@ -183,13 +172,6 @@ export default function SchedulePage() {
                   ? "Không tìm thấy lịch làm việc phù hợp"
                   : "Chưa có lịch làm việc nào được tạo"}
               </p>
-              {!searchQuery &&
-                <Button
-                  isLoading={false}
-                  className="px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
-                >
-                  Tạo lịch mới
-                </Button>}
             </div>
           : /* Schedule List */
             <div className="grid gap-6">
