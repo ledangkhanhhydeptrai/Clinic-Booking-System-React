@@ -269,11 +269,11 @@ const AdminLayout: React.FC = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 h-screen transition-all duration-300 ${
-          sidebarOpen ? "w-72" : "w-20"
-        } ${
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0`}
+        className={`fixed top-0 left-0 z-40 h-screen transition-all duration-300 ${sidebarOpen
+          ? "w-72"
+          : "w-20"} ${mobileMenuOpen
+          ? "translate-x-0"
+          : "-translate-x-full"} lg:translate-x-0`}
       >
         <div className="h-full glass-morphism shadow-2xl flex flex-col animate-slide-left">
           {/* Logo Section */}
@@ -282,14 +282,13 @@ const AdminLayout: React.FC = () => {
               <div className="w-12 h-12 bg-linear-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <Heart className="text-white" size={24} />
               </div>
-              {sidebarOpen && (
+              {sidebarOpen &&
                 <div className="animate-fade">
                   <h1 className="text-xl font-display font-bold text-slate-900">
                     MedCare
                   </h1>
                   <p className="text-xs text-slate-500">Hospital System</p>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
 
@@ -305,38 +304,33 @@ const AdminLayout: React.FC = () => {
                       setActiveMenu(item.id);
                       navigate(item.path);
                     }}
-                    className={`menu-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
-                      activeMenu === item.id
-                        ? "bg-linear-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
+                    className={`menu-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${activeMenu ===
+                    item.id
+                      ? "bg-linear-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30"
+                      : "text-slate-600 hover:bg-slate-100"}`}
                     style={{ animationDelay: `${idx * 0.05}s` }}
                     isLoading={false}
                   >
                     <Icon
                       size={20}
-                      className={`shrink-0 ${
-                        activeMenu === item.id
-                          ? "text-white"
-                          : "text-slate-400 group-hover:text-blue-600"
-                      }`}
+                      className={`shrink-0 ${activeMenu === item.id
+                        ? "text-white"
+                        : "text-slate-400 group-hover:text-blue-600"}`}
                     />
-                    {sidebarOpen && (
+                    {sidebarOpen &&
                       <span className="flex-1 text-left font-medium animate-fade">
                         {item.label}
-                      </span>
-                    )}
-                    {sidebarOpen && item.badge && (
+                      </span>}
+                    {sidebarOpen &&
+                      item.badge &&
                       <span
-                        className={`px-2 py-0.5 rounded-full text-xs font-semibold animate-fade ${
-                          activeMenu === item.id
-                            ? "bg-white/20 text-white"
-                            : "bg-blue-100 text-blue-700"
-                        }`}
+                        className={`px-2 py-0.5 rounded-full text-xs font-semibold animate-fade ${activeMenu ===
+                        item.id
+                          ? "bg-white/20 text-white"
+                          : "bg-blue-100 text-blue-700"}`}
                       >
                         {item.badge}
-                      </span>
-                    )}
+                      </span>}
                   </Button>
                 );
               })}
@@ -347,37 +341,33 @@ const AdminLayout: React.FC = () => {
 
             {/* Bottom Menu Items */}
             <div className="space-y-1">
-              {bottomMenuItems.map((item) => {
+              {bottomMenuItems.map(item => {
                 const Icon = item.icon;
                 return (
                   <Button
                     isLoading={false}
                     key={item.id}
                     onClick={() => setActiveMenu(item.id)}
-                    className={`menu-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
-                      activeMenu === item.id
-                        ? "bg-linear-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
+                    className={`menu-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${activeMenu ===
+                    item.id
+                      ? "bg-linear-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30"
+                      : "text-slate-600 hover:bg-slate-100"}`}
                   >
                     <Icon
                       size={20}
-                      className={`shrink-0 ${
-                        activeMenu === item.id
-                          ? "text-white"
-                          : "text-slate-400 group-hover:text-blue-600"
-                      }`}
+                      className={`shrink-0 ${activeMenu === item.id
+                        ? "text-white"
+                        : "text-slate-400 group-hover:text-blue-600"}`}
                     />
-                    {sidebarOpen && (
+                    {sidebarOpen &&
                       <span className="flex-1 text-left font-medium animate-fade">
                         {item.label}
-                      </span>
-                    )}
-                    {sidebarOpen && item.badge && (
+                      </span>}
+                    {sidebarOpen &&
+                      item.badge &&
                       <span className="notification-dot px-2 py-0.5 bg-red-500 text-white rounded-full text-xs font-semibold animate-fade">
                         {item.badge}
-                      </span>
-                    )}
+                      </span>}
                   </Button>
                 );
               })}
@@ -387,27 +377,25 @@ const AdminLayout: React.FC = () => {
           {/* User Profile Section */}
           <div className="p-4 border-t border-slate-200/50">
             <div
-              className={`flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 transition-all duration-300 cursor-pointer ${
-                sidebarOpen ? "" : "justify-center"
-              }`}
+              className={`flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 transition-all duration-300 cursor-pointer ${sidebarOpen
+                ? ""
+                : "justify-center"}`}
             >
               <div className="w-10 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
                 BS
               </div>
-              {sidebarOpen && (
+              {sidebarOpen &&
                 <div className="flex-1 animate-fade">
                   <p className="text-sm font-semibold text-slate-900">
                     Bác sĩ Nguyễn Văn A
                   </p>
                   <p className="text-xs text-slate-500">Tim mạch</p>
-                </div>
-              )}
-              {sidebarOpen && (
+                </div>}
+              {sidebarOpen &&
                 <ChevronDown
                   size={16}
                   className="text-slate-400 animate-fade"
-                />
-              )}
+                />}
             </div>
           </div>
 
@@ -417,20 +405,18 @@ const AdminLayout: React.FC = () => {
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="absolute -right-3 top-24 w-6 h-6 bg-white rounded-full shadow-lg border border-slate-200 items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-300 hidden lg:flex"
           >
-            {sidebarOpen ? (
-              <ChevronDown size={14} className="rotate-90" />
-            ) : (
-              <ChevronDown size={14} className="-rotate-90" />
-            )}
+            {sidebarOpen
+              ? <ChevronDown size={14} className="rotate-90" />
+              : <ChevronDown size={14} className="-rotate-90" />}
           </Button>
         </div>
       </aside>
 
       {/* Main Content */}
       <div
-        className={`transition-all duration-300 ${
-          sidebarOpen ? "lg:ml-72" : "lg:ml-20"
-        }`}
+        className={`transition-all duration-300 ${sidebarOpen
+          ? "lg:ml-72"
+          : "lg:ml-20"}`}
       >
         {/* Header */}
         <header className="glass-morphism border-b border-slate-200/50 sticky top-0 z-30 animate-slide-top">
@@ -443,11 +429,9 @@ const AdminLayout: React.FC = () => {
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   className="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
                 >
-                  {mobileMenuOpen ? (
-                    <X size={24} className="text-slate-600" />
-                  ) : (
-                    <Menu size={24} className="text-slate-600" />
-                  )}
+                  {mobileMenuOpen
+                    ? <X size={24} className="text-slate-600" />
+                    : <Menu size={24} className="text-slate-600" />}
                 </Button>
 
                 {/* Search Bar */}
@@ -492,14 +476,14 @@ const AdminLayout: React.FC = () => {
                     </div>
                     <ChevronDown
                       size={16}
-                      className={`text-slate-400 transition-transform duration-300 hidden md:block ${
-                        userMenuOpen ? "rotate-180" : ""
-                      }`}
+                      className={`text-slate-400 transition-transform duration-300 hidden md:block ${userMenuOpen
+                        ? "rotate-180"
+                        : ""}`}
                     />
                   </Button>
 
                   {/* User Dropdown */}
-                  {userMenuOpen && (
+                  {userMenuOpen &&
                     <div className="absolute right-0 mt-2 w-56 glass-morphism rounded-xl shadow-2xl border border-slate-200 py-2 animate-fade z-auto">
                       <div className="px-4 py-3 border-b border-slate-200/50">
                         <p className="text-sm font-semibold text-slate-900">
@@ -538,8 +522,7 @@ const AdminLayout: React.FC = () => {
                         <LogOut size={16} />
                         <span className="text-sm font-medium">Đăng xuất</span>
                       </Button>
-                    </div>
-                  )}
+                    </div>}
                 </div>
               </div>
             </div>
@@ -553,12 +536,11 @@ const AdminLayout: React.FC = () => {
       </div>
 
       {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen &&
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden animate-fade"
           onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
+        />}
     </div>
   );
 };
