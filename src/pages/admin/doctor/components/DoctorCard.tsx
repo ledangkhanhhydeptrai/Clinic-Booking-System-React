@@ -70,20 +70,21 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
           <span>{doctor.phone}</span>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         <Button
           onClick={() => onEdit(doctor)}
           isLoading={false}
-          className="flex-1 items-center justify-center px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 font-medium"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-blue-500 text-blue-600 rounded-xl hover:bg-blue-50 hover:border-blue-600 transition-all duration-200 font-medium shadow-sm"
         >
-          <Edit2 size={16} /> Sửa
+          <Edit2 size={15} />
+          Sửa
         </Button>
         <Button
           onClick={() => onDelete(doctor.id)}
           isLoading={false}
-          className="flex-1 items-center justify-center px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 font-medium"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-red-400 text-red-500 rounded-xl hover:bg-red-50 hover:border-red-500 transition-all duration-200 font-medium shadow-sm"
         >
-          <TrashIcon size={16} />
+          <TrashIcon size={15} />
           Xóa
         </Button>
       </div>

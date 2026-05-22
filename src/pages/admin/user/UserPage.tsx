@@ -1,11 +1,37 @@
 import React, { useState } from "react";
-import { Search, Phone, Calendar, User, Filter } from "lucide-react";
+import {
+  Search,
+  Phone,
+  Calendar,
+  Filter,
+  UserPlus,
+  UserCheck,
+  Users
+} from "lucide-react";
 import { PatientProps, useUser } from "../../../features/user/useUser";
 import GlobalStyles from "../doctor/components/GlobalStyles";
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(-2)
+    .map(w => w[0].toUpperCase())
+    .join("");
+}
 
 const UserPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { data: patientsData = [] } = useUser();
+
+  const totalPatients = patientsData.length;
+
+  const newPatients = patientsData.filter(patient => {
+    const today = new Date().toDateString();
+    return new Date(patient.dob).toDateString() === today;
+  }).length;
+
+  const treatingPatients = totalPatients - newPatients;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -26,135 +52,225 @@ const UserPage: React.FC = () => {
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-cyan-50">
       <GlobalStyles />
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Header Section */}
-        <div className="mb-12 animate-slide-in-left">
-          <div className="flex items-center justify-between mb-8">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Manrope:wght@400;500;600&display=swap');
+
+        .up-root { font-family: 'Manrope', sans-serif; }
+        .up-serif { font-family: 'Playfair Display', serif; }
+
+        .up-card {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(16px);
+          border: 0.5px solid rgba(0,0,0,0.08);
+        }
+
+        .up-patient-card {
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .up-patient-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 32px rgba(24, 95, 165, 0.12);
+        }
+
+        .up-stat-card {
+          transition: transform 0.18s ease;
+        }
+        .up-stat-card:hover {
+          transform: translateY(-2px);
+        }
+
+        .up-search-input:focus {
+          border-color: #185FA5 !important;
+          box-shadow: 0 0 0 3px rgba(24,95,165,0.1);
+        }
+
+        .up-btn-primary {
+          transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+        .up-btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+        .up-btn-primary:active { transform: scale(0.98); }
+
+        .up-view-btn {
+          transition: background 0.15s ease;
+        }
+        .up-view-btn:hover { background: #0C447C !important; }
+
+        @keyframes upFadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .up-fade-up { animation: upFadeUp 0.5s ease both; }
+        .up-fade-up-1 { animation: upFadeUp 0.5s 0.05s ease both; }
+        .up-fade-up-2 { animation: upFadeUp 0.5s 0.1s ease both; }
+      `}</style>
+
+      <div className="up-root px-6 py-12">
+        {/* ── Header ── */}
+        <div className="mb-8 up-fade-up">
+          <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
             <div>
-              <h1 className="header-title text-5xl font-bold text-slate-800 mb-2">
-                Danh Sách Bệnh Nhân
+              <h1 className="up-serif text-4xl sm:text-5xl font-bold text-slate-800 mb-1">
+                Danh sách bệnh nhân
               </h1>
-              <p className="text-slate-600 text-lg">
+              <p className="text-slate-500 text-base">
                 Quản lý thông tin và hồ sơ bệnh nhân
               </p>
             </div>
+            <button className="up-btn-primary flex items-center gap-2 bg-blue-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm">
+              <UserPlus size={16} />
+              Thêm bệnh nhân
+            </button>
           </div>
 
-          {/* Search and Filter Bar */}
-          <div className="glass-effect rounded-3xl p-6 shadow-lg">
-            <div className="flex gap-4">
+          {/* Search bar */}
+          <div className="up-card rounded-2xl p-4 shadow-sm">
+            <div className="flex gap-3">
               <div className="flex-1 relative">
                 <Search
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"
-                  size={20}
+                  size={16}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                 />
                 <input
                   type="text"
-                  placeholder="Tìm kiếm theo tên hoặc số điện thoại..."
+                  placeholder="Tìm theo tên hoặc số điện thoại..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="search-input w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-2xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/50"
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className="up-search-input w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm bg-white/60 outline-none transition-all"
                 />
               </div>
-              <button className="px-6 py-3 border-2 border-slate-200 rounded-2xl hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 flex items-center gap-2 bg-white/50">
-                <Filter size={20} className="text-slate-600" />
-                <span className="font-medium text-slate-700">Lọc</span>
+              <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white/60 hover:border-blue-400 hover:bg-blue-50 transition-all">
+                <Filter size={15} />
+                Lọc
               </button>
             </div>
           </div>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-3 gap-6 mb-10">
-          <div className="glass-effect rounded-2xl p-6 shadow-md animate-fade-in-up">
-            <div className="text-3xl font-bold text-blue-600 mb-1">
-              {filteredPatients.length}
+        {/* ── Stats ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 up-fade-up-1">
+          <div className="up-card up-stat-card rounded-2xl p-5 shadow-sm flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+              <Users size={20} className="text-blue-700" />
             </div>
-            <div className="text-slate-600 font-medium">Tổng Bệnh Nhân</div>
+            <div>
+              <div className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wide">
+                Tổng bệnh nhân
+              </div>
+              <div className="up-serif text-3xl font-bold text-blue-800 leading-none">
+                {totalPatients}
+              </div>
+            </div>
           </div>
-          <div className="glass-effect rounded-2xl p-6 shadow-md animate-fade-in-up">
-            <div className="text-3xl font-bold text-emerald-600 mb-1">24</div>
-            <div className="text-slate-600 font-medium">Hôm Nay</div>
+
+          <div className="up-card up-stat-card rounded-2xl p-5 shadow-sm flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+              <UserCheck size={20} className="text-emerald-700" />
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wide">
+                Đang điều trị
+              </div>
+              <div className="up-serif text-3xl font-bold text-emerald-800 leading-none">
+                {treatingPatients}
+              </div>
+            </div>
           </div>
-          <div className="glass-effect rounded-2xl p-6 shadow-md animate-fade-in-up">
-            <div className="text-3xl font-bold text-amber-600 mb-1">12</div>
-            <div className="text-slate-600 font-medium">Đang Chờ</div>
+
+          <div className="up-card up-stat-card rounded-2xl p-5 shadow-sm flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+              <UserPlus size={20} className="text-amber-700" />
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 font-medium mb-1 uppercase tracking-wide">
+                Mới nhập viện
+              </div>
+              <div className="up-serif text-3xl font-bold text-amber-800 leading-none">
+                {newPatients}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Patients Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPatients.map((patient: PatientProps) => (
-            <div
-              key={patient.id}
-              className="patient-card card-hover glass-effect rounded-3xl p-6 shadow-md cursor-pointer animate-fade-in-up"
-            >
-              {/* Patient Avatar */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-md">
-                  <User size={28} className="text-white" />
+        {/* ── Patient Grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 up-fade-up-2">
+          {filteredPatients.map((patient: PatientProps) => {
+            const initials = getInitials(patient.fullName);
+
+            return (
+              <div
+                key={patient.id}
+                className="up-card up-patient-card rounded-2xl overflow-hidden shadow-sm cursor-pointer"
+              >
+                {/* Card header */}
+                <div className="flex items-center gap-3 px-5 py-4 border-b border-black/5">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-sm font-bold up-serif">
+                    {initials}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-slate-800 text-sm truncate">
+                      {patient.fullName}
+                    </div>
+                    <div className="text-xs text-slate-400 font-mono">
+                      ID: {patient.id.slice(0, 8)}...
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-lg text-slate-800 truncate">
-                    {patient.fullName}
-                  </h3>
-                  <span className="text-sm text-slate-500">
-                    ID: {patient.id.slice(0, 8)}...
-                  </span>
+
+                {/* Card body */}
+                <div className="px-5 py-3 space-y-2.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                      <Phone size={14} className="text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wide">
+                        Số điện thoại
+                      </div>
+                      <div className="text-sm font-semibold text-slate-700">
+                        {patient.phone}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                      <Calendar size={14} className="text-emerald-600" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wide">
+                        Ngày sinh
+                      </div>
+                      <div className="text-sm font-semibold text-slate-700">
+                        {formatDate(patient.dob)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card footer */}
+                <div className="px-5 pb-4 pt-1">
+                  <button className="up-view-btn w-full py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2">
+                    Xem chi tiết
+                  </button>
                 </div>
               </div>
-
-              {/* Patient Info */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 text-slate-600">
-                  <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                    <Phone size={18} className="text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 mb-0.5">
-                      Số điện thoại
-                    </div>
-                    <div className="font-medium text-slate-800">
-                      {patient.phone}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 text-slate-600">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-                    <Calendar size={18} className="text-emerald-600" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 mb-0.5">
-                      Ngày sinh
-                    </div>
-                    <div className="font-medium text-slate-800">
-                      {formatDate(patient.dob)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Button */}
-              <button className="w-full mt-6 py-3 bg-linear-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                Xem Chi Tiết
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Empty State */}
-        {filteredPatients.length === 0 && (
-          <div className="text-center py-20 animate-fade-in-up">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-slate-100 flex items-center justify-center">
-              <Search size={40} className="text-slate-400" />
+        {/* ── Empty state ── */}
+        {filteredPatients.length === 0 &&
+          <div className="text-center py-24 up-fade-up">
+            <div className="w-20 h-20 mx-auto mb-5 rounded-full bg-slate-100 flex items-center justify-center">
+              <Search size={36} className="text-slate-300" />
             </div>
-            <h3 className="text-2xl font-semibold text-slate-700 mb-2">
+            <h3 className="up-serif text-2xl font-bold text-slate-600 mb-2">
               Không tìm thấy bệnh nhân
             </h3>
-            <p className="text-slate-500">Thử tìm kiếm với từ khóa khác</p>
-          </div>
-        )}
+            <p className="text-slate-400 text-sm">
+              Thử tìm kiếm với từ khóa khác
+            </p>
+          </div>}
       </div>
     </div>
   );

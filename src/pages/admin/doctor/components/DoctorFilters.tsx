@@ -22,6 +22,7 @@ const DoctorFilters: React.FC<DoctorFiltersProps> = ({
     <div className="glass-effect rounded-2xl p-6 shadow-lg animate-fade-in">
       <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
         <div className="relative">
+          <Label htmlFor="specialty-filter">Tìm kiếm theo chuyên khoa</Label>
           <Search
             className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
             size={20}
