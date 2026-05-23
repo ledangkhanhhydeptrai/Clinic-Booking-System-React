@@ -7,19 +7,82 @@ import {
   Bell,
   FileText,
   LogOut,
-  User
+  User,
+  CheckCircleIcon
 } from "lucide-react";
 import Button from "../../components/common/Button";
-import useProfile from "../../features/profile/useProfile";
+import ErrorIcon from "@mui/icons-material/Error";
+import useProfile, {
+  useUpdateProfileMutation
+} from "../../features/profile/useProfile";
 import ProfileEmptyState from "./components/ProfileEmptyState";
+import { NotificationProps } from "../../notification/Notification";
+import ProfileUpdate from "./components/ProfileUpdate";
+import { Alert, Snackbar } from "@mui/material";
+import SlideTransitions from "../../slide/SlideTransition";
 
 const ProfilePage: React.FC = () => {
   const { data: profile } = useProfile();
-  console.log("Profile",profile);
+  const { mutate, isPending } = useUpdateProfileMutation();
+  const [fullName, setFullName] = React.useState<string>("");
+  const [phone, setPhone] = React.useState<string>("");
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [notification, setNotification] = React.useState<NotificationProps>({
+    open: false,
+    message: "",
+    severity: "success"
+  });
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+  const handleCloseSnackbar = () => {
+    setNotification(prev => ({
+      ...prev,
+      open: false
+    }));
+  };
   if (!profile) {
     return <ProfileEmptyState />;
   }
-
+  const handleOpen = () => {
+    setFullName(profile.fullName);
+    setPhone(profile.phone);
+    setIsOpen(true);
+  };
+  const handleSubmit = async () => {
+    try {
+      mutate(
+        {
+          id: profile.id,
+          fullName,
+          phone
+        },
+        {
+          onSuccess: () => {
+            setNotification({
+              open: true,
+              message: "Cập nhật hồ sơ thành công",
+              severity: "success"
+            });
+            setIsOpen(false);
+          },
+          onError: () => {
+            setNotification({
+              open: true,
+              message: "Cập nhật hồ sơ thất bại",
+              severity: "error"
+            });
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   return (
     <div className="bg-linear-to-br from-stone-50 via-white to-rose-50/30 min-h-screen">
       <style>{`
@@ -139,7 +202,6 @@ const ProfilePage: React.FC = () => {
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
         }
       `}</style>
-
       <div className="">
         {/* Header Section */}
         <div className="glass-card rounded-3xl p-8 md:p-12 mb-8 animate-fadeInUp">
@@ -164,6 +226,10 @@ const ProfilePage: React.FC = () => {
 
               <div className="flex flex-wrap gap-3">
                 <Button
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleOpen();
+                  }}
                   isLoading={false}
                   className="btn-primary px-6 py-3 rounded-xl text-white font-bold flex items-center space-x-2"
                 >
@@ -312,10 +378,73 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
-
       {/* Background Decorations */}
-      <div className="fixed top-20 right-10 w-72 h-72 bg-linear-to-br from-rose-200/30 to-orange-200/30 rounded-full blur-3xl -z-10"></div>
-      <div className="fixed bottom-20 left-10 w-96 h-96 bg-linear-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -z-10"></div>
+      <div className="fixed top-20 right-10 w-72 h-72 bg-linear-to-br from-rose-200/30 to-orange-200/30 rounded-full blur-3xl -z-10" />
+      <div className="fixed bottom-20 left-10 w-96 h-96 bg-linear-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-3xl -z-10" />
+      {isOpen &&
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-linear-to-br from-indigo-900/60 via-slate-900/50 to-blue-900/60 backdrop-blur-md"
+            onClick={handleClose}
+          />
+
+          {/* Decorative blobs */}
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-3xl animate-fadeInUp">
+            {/* Glow ring */}
+            <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 to-blue-500 rounded-3xl blur opacity-30" />
+
+            <div className="relative">
+              <ProfileUpdate
+                profile={profile}
+                isLoading={isPending}
+                fullName={fullName}
+                setFullName={setFullName}
+                phone={phone}
+                setPhone={setPhone}
+                onSubmit={handleSubmit}
+                onClose={handleClose}
+              />
+            </div>
+          </div>
+        </div>}
+      <Snackbar
+        open={notification.open}
+        onClose={handleCloseModal}
+        TransitionComponent={SlideTransitions}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        autoHideDuration={4000}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={notification.severity}
+          variant="filled"
+          iconMapping={{
+            success: <CheckCircleIcon fontSize="small" />,
+            error: <ErrorIcon fontSize="small" />
+          }}
+          sx={{
+            width: "100%",
+            bgcolor:
+              notification.severity === "success" ? "#4caf50" : "#f44336",
+            color: "white",
+            fontWeight: "bold",
+            borderRadius: "12px",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.2)",
+            px: 2,
+            py: 1.5,
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
