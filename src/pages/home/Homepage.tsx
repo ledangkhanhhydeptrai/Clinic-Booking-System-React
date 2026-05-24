@@ -4,9 +4,7 @@ import FeaturesSection from "./components/FeaturesSection";
 import SpecialtiesSection from "./components/SpecialtiesSection";
 import HowItWorksSection from "./components/HowItWorksSection";
 import TestimonialsSection from "./components/TestimonialsSection";
-import CTASection from "./components/CTASection";
-import Header from "../../components/layout/Header";
-import Footer from "../../components/layout/Footer";
+import CTASection from "./components/CTASection"; 
 import { useLocation } from "react-router-dom";
 import { NotificationProps } from "../../notification/Notification";
 import { Alert, Snackbar } from "@mui/material";
@@ -22,18 +20,21 @@ const Homepage: React.FC = () => {
   });
   const location = useLocation();
   const handleClose = () => {
-    setNotification((prev) => ({ ...prev, open: false }));
+    setNotification(prev => ({ ...prev, open: false }));
   };
-  React.useEffect(() => {
-    const state = location.state as LoginState | null;
-    if (state !== null && state.loginSuccess) {
-      setNotification({
-        open: true,
-        message: "Đăng nhập thành công",
-        severity: "success"
-      });
-    }
-  }, [location]);
+  React.useEffect(
+    () => {
+      const state = location.state as LoginState | null;
+      if (state !== null && state.loginSuccess) {
+        setNotification({
+          open: true,
+          message: "Đăng nhập thành công",
+          severity: "success"
+        });
+      }
+    },
+    [location]
+  );
   return (
     <div className="-mt-20 -mb-20 bg-linear-to-br from-stone-50 via-amber-50 to-rose-50">
       <style>{`
@@ -125,14 +126,12 @@ const Homepage: React.FC = () => {
         }
       `}</style>
 
-      <Header />
       <HeroSection />
       <FeaturesSection />
       <SpecialtiesSection />
       <HowItWorksSection />
       <TestimonialsSection />
       <CTASection />
-      <Footer />
       <Snackbar
         open={notification.open}
         onClose={handleClose}
