@@ -46,10 +46,10 @@ export default function RegisterPage() {
 
   /* ================= RENDER ================= */
   return (
-    <div className="bg-linear-to-br from-teal-50 via-cyan-50 to-blue-50 flex items-center justify-center relative overflow-hidden">
+    <div className="-mb-10 flex items-center justify-center relative overflow-hidden">
       <MedicalDecorations />
 
-      <div className="w-full max-w-6xl flex rounded-3xl overflow-hidden shadow-2xl bg-white relative my-8">
+      <div className="w-full flex overflow-hidden relative">
         <BrandingPanel />
 
         <div className="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
