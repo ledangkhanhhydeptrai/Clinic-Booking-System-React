@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-linear-to-br from-stone-900 via-stone-800 to-stone-900 text-white">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-16 pb-8">
+      <div className="mt-1 px-1 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-12">
           {/* Company Info */}
           <div className="lg:col-span-1">

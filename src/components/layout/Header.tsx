@@ -5,8 +5,11 @@ import {
   Menu,
   X,
   ChevronDown,
-  Sparkles,
-  Calendar
+  ShieldCheck,
+  CalendarPlus,
+  Stethoscope,
+  Users,
+  Clock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,20 +18,16 @@ import Button from "../common/Button";
 import { logout } from "../../features/auth/authSlice";
 
 const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
-  const [isSearchFocused, setIsSearchFocused] = React.useState<boolean>(false);
-  const [isUserDropdownOpen, setIsUserDropdownOpen] =
-    React.useState<boolean>(false);
-  const [scrolled, setScrolled] = React.useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
 
-  const user = useSelector((state: RootState) => state.auth.user);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
 
   React.useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -38,408 +37,289 @@ const Header: React.FC = () => {
     navigate("/");
   };
 
+  const navItems = [
+    { name: "Trang chủ", path: "/" },
+    { name: "Hướng dẫn", path: "/guide" },
+    { name: "Dịch vụ", path: "/services" },
+    { name: "Liên hệ", path: "/contact" }
+  ];
+
+  // Stats hiển thị trong mobile menu
+  const quickStats = [
+    { icon: Users, label: "120+ bác sĩ" },
+    { icon: CalendarPlus, label: "Đặt lịch nhanh" },
+    { icon: Clock, label: "Chờ ≤ 15 phút" },
+    { icon: ShieldCheck, label: "Uy tín & An toàn" }
+  ];
+
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
-        
-        * {
-          font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-4px);
-          }
-        }
-        
-        @keyframes shimmer {
-          0% {
-            background-position: -1000px 0;
-          }
-          100% {
-            background-position: 1000px 0;
-          }
-        }
-        
-        @keyframes pulse-glow {
-          0%, 100% {
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);
-          }
-          50% {
-            box-shadow: 0 0 30px rgba(244, 63, 94, 0.5);
-          }
-        }
-        
-        .dropdown-enter {
-          animation: slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .search-active {
-          box-shadow: 0 8px 24px rgba(244, 63, 94, 0.15), 0 0 0 4px rgba(244, 63, 94, 0.08);
-        }
-        
-        .glass-header {
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-        }
-        
-        .glass-header-scrolled {
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(24px) saturate(200%);
-          -webkit-backdrop-filter: blur(24px) saturate(200%);
-          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-        }
-        
-        .brand-text {
-          font-family: 'Sora', sans-serif;
-          font-weight: 800;
-          background: linear-gradient(135deg, #f43f5e 0%, #fb923c 50%, #f59e0b 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          letter-spacing: -0.02em;
-        }
-        
-        .logo-icon {
-          background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%);
-          box-shadow: 0 8px 16px rgba(244, 63, 94, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-        
-        .logo-icon:hover {
-          animation: float 2s ease-in-out infinite;
-        }
-        
-        .nav-link {
-          position: relative;
-          font-weight: 600;
-          letter-spacing: -0.01em;
-        }
-        
-        .nav-link::before {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 50%;
-          transform: translateX(-50%) scaleX(0);
-          width: 80%;
-          height: 3px;
-          background: linear-gradient(90deg, #f43f5e, #fb923c);
-          border-radius: 2px;
-          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .nav-link:hover::before {
-          transform: translateX(-50%) scaleX(1);
-        }
-        
-        .search-input {
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .search-input:focus {
-          transform: scale(1.02);
-        }
-        
-        .cta-button {
-          background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%);
-          box-shadow: 0 4px 16px rgba(244, 63, 94, 0.3);
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .cta-button::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-          transition: left 0.5s;
-        }
-        
-        .cta-button:hover::before {
-          left: 100%;
-        }
-        
-        .cta-button:hover {
-          box-shadow: 0 8px 24px rgba(244, 63, 94, 0.4);
-          transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-          background: white;
-          border: 2px solid transparent;
-          background-clip: padding-box;
-          position: relative;
-        }
-        
-        .btn-secondary::before {
-          content: '';
-          position: absolute;
-          inset: -2px;
-          background: linear-gradient(135deg, #f43f5e, #fb923c);
-          border-radius: 10px;
-          z-index: -1;
-        }
-        
-        .btn-secondary:hover {
-          background: linear-gradient(135deg, rgba(244, 63, 94, 0.05), rgba(251, 146, 60, 0.05));
-        }
-        
-        .user-dropdown {
-          background: white;
-          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-          border-radius: 16px;
-        }
-        
-        .mobile-menu {
-          background: rgba(255, 255, 255, 0.98);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-        }
-        
-        .sparkle-icon {
-          animation: float 3s ease-in-out infinite;
-        }
-      `}</style>
-
+      {/* MAIN HEADER */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "glass-header-scrolled" : "glass-header"
-        } border-b ${scrolled ? "border-stone-200/60" : "border-stone-200/40"}`}
+        className={`fixed top-px left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-white/95 backdrop-blur-md shadow-[0_1px_14px_rgba(0,0,0,0.06)] border-b border-stone-200/60"
+            : "bg-white border-b border-stone-100"
+        }`}
       >
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo - Enhanced with gradient and shadow */}
-            <div className="flex items-center space-x-3 shrink-0 cursor-pointer group">
-              <div className="logo-icon w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                <Heart className="w-6 h-6 text-white" fill="white" />
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="h-[66px] flex items-center justify-between gap-4">
+            {/* LOGO */}
+            <div
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2.5 cursor-pointer group shrink-0"
+            >
+              <div className="relative">
+                <div className="w-9 h-9 rounded-[9px] bg-rose-700 flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+                  <Heart
+                    className="w-[17px] h-[17px] text-white"
+                    fill="white"
+                  />
+                </div>
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-white" />
               </div>
-              <div className="flex flex-col">
-                <span className="brand-text text-2xl leading-none">
+              <div>
+                <h1 className="text-[16.5px] font-semibold text-stone-900 tracking-tight leading-none">
                   HealthCare+
-                </span>
-                <span className="text-[10px] text-stone-500 tracking-wider font-medium leading-none mt-1">
-                  Chăm sóc sức khỏe toàn diện
-                </span>
+                </h1>
+                <p className="text-[10.5px] text-stone-400 uppercase tracking-wider mt-0.5">
+                  Clinic Booking
+                </p>
               </div>
             </div>
 
-            {/* Desktop Navigation - Improved typography and spacing */}
-            <nav className="hidden lg:flex items-center space-x-1 flex-1 justify-center mx-12">
-              {[
-                { name: "Trang chủ", href: "/" },
-                { name: "Đặt lịch", href: "/user/schedule" },
-                { name: "Bác sĩ", href: "#" },
-                { name: "Chuyên khoa", href: "#" },
-                { name: "Liên hệ", href: "#" }
-              ].map((item) => (
-                <a
+            {/* DESKTOP NAV */}
+            <nav className="hidden lg:flex items-center gap-0 flex-1 justify-center">
+              {navItems.map((item) => (
+                <button
                   key={item.name}
-                  href={item.href}
-                  className="nav-link px-4 py-3 text-[15px] text-stone-700 hover:text-rose-600 transition-all duration-300 whitespace-nowrap"
+                  onClick={() => navigate(item.path)}
+                  className="relative px-3.5 py-1.5 text-[13.5px] font-normal text-stone-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-all duration-150"
                 >
                   {item.name}
-                </a>
+                </button>
               ))}
             </nav>
 
-            {/* Right Side - Enhanced with better shadows and effects */}
-            <div className="hidden lg:flex items-center space-x-3">
-              {/* Enhanced Search Bar */}
-              <div
-                className={`relative transition-all duration-500 ${
-                  isSearchFocused ? "w-80" : "w-64"
-                }`}
-              >
-                <Search
-                  className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-all duration-300 ${
-                    isSearchFocused
-                      ? "text-rose-500 scale-110"
-                      : "text-stone-400"
-                  }`}
-                />
+            {/* RIGHT SIDE */}
+            <div className="hidden lg:flex items-center gap-2 shrink-0">
+              {/* 24/7 pill */}
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-700 font-medium whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                Hỗ trợ 24/7
+              </div>
+
+              {/* SEARCH */}
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-400" />
                 <input
                   type="text"
-                  placeholder="Tìm bác sĩ, chuyên khoa, dịch vụ..."
-                  className={`search-input w-full pl-12 pr-4 py-3 text-[15px] border-2 rounded-xl focus:outline-none ${
-                    isSearchFocused
-                      ? "border-rose-400 search-active bg-white"
-                      : "border-stone-200 bg-white/80 hover:bg-white hover:border-stone-300"
-                  }`}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)}
+                  placeholder="Tìm dịch vụ..."
+                  className="w-44 pl-[30px] pr-3 py-[7px] text-[13px] bg-stone-50 border border-stone-200 rounded-[9px] text-stone-700 placeholder:text-stone-400 focus:outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-100 focus:w-52 transition-all duration-200"
                 />
               </div>
 
-              {/* User Section or Auth Buttons */}
+              {/* BOOKING CTA — dùng CalendarPlus */}
+              <button
+                onClick={() => navigate("/user/schedule")}
+                className="flex items-center gap-1.5 px-4 py-[7.5px] bg-rose-700 hover:bg-rose-800 hover:-translate-y-px active:translate-y-0 text-white rounded-[9px] text-[13px] font-medium transition-all duration-150 whitespace-nowrap"
+              >
+                <CalendarPlus className="w-3.5 h-3.5" />
+                Đặt lịch
+              </button>
+
+              <div className="w-px h-[18px] bg-stone-200 mx-1" />
+
+              {/* USER */}
               {user ? (
                 <div className="relative">
-                  <Button
-                    isLoading={false}
+                  <button
                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                    className="flex items-center space-x-2 px-4 py-2.5 text-[15px] font-semibold text-stone-700 border-2 border-stone-200 rounded-xl hover:border-rose-300 hover:bg-rose-50/50 transition-all duration-300 max-w-[200px]"
+                    className="flex items-center gap-1.5 pl-[5px] pr-2.5 py-[5px] border border-stone-200 rounded-full bg-stone-50 hover:border-stone-300 hover:bg-white transition-all"
                   >
-                    <span className="truncate">Xin chào, {user.username}</span>
+                    <div className="w-[27px] h-[27px] rounded-full bg-rose-100 flex items-center justify-center">
+                      <span className="text-[11.5px] font-semibold text-rose-700">
+                        {user.username?.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-[13px] font-medium text-stone-700">
+                      {user.username}
+                    </span>
                     <ChevronDown
-                      className={`w-4 h-4 shrink-0 transition-transform duration-300 ${
+                      className={`w-3.5 h-3.5 text-stone-400 transition-transform duration-200 ${
                         isUserDropdownOpen ? "rotate-180" : ""
                       }`}
                     />
-                  </Button>
+                  </button>
 
-                  {/* Enhanced Dropdown */}
                   {isUserDropdownOpen && (
-                    <div className="absolute right-0 mt-3 w-48 user-dropdown dropdown-enter overflow-hidden">
-                      <Button
-                        isLoading={false}
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-lg shadow-stone-100/80 border border-stone-100 overflow-hidden py-1">
+                      <div className="px-4 py-2.5 border-b border-stone-50">
+                        <p className="text-[13px] font-medium text-stone-800">
+                          {user.username}
+                        </p>
+                        <p className="text-[11.5px] text-stone-400 mt-0.5">
+                          Thành viên
+                        </p>
+                      </div>
+                      <button
                         onClick={() => navigate("/user/profile")}
-                        className="w-full text-left px-5 py-3 text-[15px] font-medium text-stone-700 hover:bg-linear-to-r hover:from-rose-50 hover:to-orange-50 transition-all duration-200"
+                        className="w-full text-left px-4 py-2.5 text-[13px] text-stone-600 hover:bg-stone-50 hover:text-stone-900 transition-colors"
                       >
                         Hồ sơ cá nhân
-                      </Button>
-                      <div className="border-t border-stone-100"></div>
-                      <Button
+                      </button>
+                      <button
+                        onClick={() => navigate("/user/appointments")}
+                        className="w-full text-left px-4 py-2.5 text-[13px] text-stone-600 hover:bg-stone-50 hover:text-stone-900 transition-colors"
+                      >
+                        Lịch hẹn của tôi
+                      </button>
+                      <div className="my-1 border-t border-stone-100" />
+                      <button
                         onClick={handleLogout}
-                        isLoading={false}
-                        className="w-full text-left px-5 py-3 text-[15px] font-medium text-rose-600 hover:bg-rose-50 transition-all duration-200"
+                        className="w-full text-left px-4 py-2.5 text-[13px] text-rose-600 hover:bg-rose-50 transition-colors"
                       >
                         Đăng xuất
-                      </Button>
+                      </button>
                     </div>
                   )}
                 </div>
               ) : (
-                <>
+                <div className="flex items-center gap-2">
                   <Button
-                    onClick={() => navigate("/auth")}
                     isLoading={false}
-                    className="px-5 py-2.5 text-[15px] text-stone-700 hover:text-rose-600 font-semibold transition-all duration-300 whitespace-nowrap hover:bg-stone-50 rounded-xl"
+                    onClick={() => navigate("/auth")}
+                    className="px-3 py-[7px] text-[13px] font-medium text-stone-500 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-all"
                   >
                     Đăng nhập
                   </Button>
                   <button
                     onClick={() => navigate("/auth/register")}
-                    className="btn-secondary px-5 py-2.5 text-[15px] text-rose-600 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap"
+                    className="px-3.5 py-[7px] text-[13px] font-medium text-rose-700 border border-rose-200 hover:bg-rose-700 hover:text-white hover:border-rose-700 rounded-[9px] transition-all duration-150 whitespace-nowrap"
                   >
                     Đăng ký
                   </button>
-                </>
+                </div>
               )}
             </div>
 
-            {/* Mobile Menu Button - Enhanced */}
-            <Button
-              isLoading={false}
+            {/* MOBILE MENU BUTTON */}
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2.5 text-stone-600 hover:bg-linear-to-br hover:from-rose-50 hover:to-orange-50 rounded-xl transition-all duration-300"
+              className="lg:hidden p-2 rounded-lg hover:bg-stone-100 transition-colors"
             >
               {isMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 text-stone-600" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 text-stone-600" />
               )}
-            </Button>
+            </button>
           </div>
 
-          {/* Enhanced Mobile Menu */}
+          {/* MOBILE MENU */}
           {isMenuOpen && (
-            <div className="lg:hidden py-6 border-t border-stone-200/60 mobile-menu dropdown-enter">
-              {/* Mobile Search - Enhanced */}
-              <div className="mb-4">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-stone-400" />
-                  <input
-                    type="text"
-                    placeholder="Tìm bác sĩ, chuyên khoa..."
-                    className="w-full pl-12 pr-4 py-3.5 text-[15px] border-2 border-stone-200 rounded-xl focus:border-rose-400 focus:outline-none focus:shadow-lg focus:shadow-rose-100 bg-white transition-all duration-300"
-                  />
-                </div>
+            <div className="lg:hidden pb-5 pt-3 border-t border-stone-100">
+              <div className="relative mb-3">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+                <input
+                  type="text"
+                  placeholder="Tìm dịch vụ..."
+                  className="w-full pl-9 pr-4 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-100 focus:border-rose-400"
+                />
               </div>
 
-              {/* Mobile Navigation Links - Enhanced */}
-              <nav className="space-y-1.5 mb-4">
-                {[
-                  "Trang chủ",
-                  "Đặt lịch khám",
-                  "Bác sĩ",
-                  "Chuyên khoa",
-                  "Liên hệ"
-                ].map((item) => (
-                  <a
-                    key={item}
-                    href="#"
-                    className="block px-4 py-3.5 text-[15px] text-stone-700 hover:bg-linear-to-r hover:from-rose-50 hover:to-orange-50 hover:text-rose-600 rounded-xl font-semibold transition-all duration-300"
-                  >
-                    {item}
-                  </a>
-                ))}
-              </nav>
-
-              {/* Mobile Auth Buttons - Enhanced */}
-              {user ? (
-                <div className="space-y-2.5 pt-4 border-t border-stone-200/60">
-                  <Button
-                    onClick={() => navigate("/profile")}
-                    isLoading={false}
-                    className="w-full px-5 py-3.5 text-[15px] text-stone-700 font-semibold border-2 border-stone-200 rounded-xl hover:border-rose-300 hover:bg-rose-50/50 transition-all duration-300"
-                  >
-                    Hồ sơ cá nhân
-                  </Button>
+              <div className="space-y-0.5">
+                {navItems.map((item) => (
                   <button
-                    onClick={handleLogout}
-                    className="w-full px-5 py-3.5 text-[15px] text-rose-600 font-semibold border-2 border-rose-200 rounded-xl hover:bg-rose-50 transition-all duration-300"
+                    key={item.name}
+                    onClick={() => {
+                      navigate(item.path);
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2.5 rounded-lg hover:bg-rose-50 text-sm text-stone-600 hover:text-rose-700 transition-all"
                   >
-                    Đăng xuất
+                    {item.name}
                   </button>
-                </div>
-              ) : (
-                <div className="space-y-2.5 pt-4 border-t border-stone-200/60">
-                  <Button
-                    isLoading={false}
-                    onClick={() => navigate("/auth")}
-                    className="w-full px-5 py-3.5 text-[15px] text-stone-700 font-semibold border-2 border-stone-200 rounded-xl hover:border-rose-300 hover:bg-rose-50/50 transition-all duration-300"
+                ))}
+              </div>
+
+              {/* QUICK STATS — dùng Users, CalendarPlus, Clock, ShieldCheck */}
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                {quickStats.map(({ icon: Icon, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-2 px-3 py-2 bg-stone-50 border border-stone-100 rounded-xl"
                   >
-                    Đăng nhập
-                  </Button>
-                  <Button
-                    isLoading={false}
-                    onClick={() => navigate("/auth/register")}
-                    className="w-full px-5 py-3.5 text-[15px] text-rose-600 font-bold border-2 border-rose-400 rounded-xl hover:bg-rose-50 transition-all duration-300"
-                  >
-                    Đăng ký
-                  </Button>
-                  <button className="cta-button w-full flex items-center justify-center space-x-2 px-5 py-3.5 text-[15px] text-white rounded-xl font-bold transition-all duration-300">
-                    <Calendar className="w-5 h-5" />
-                    <span>Đặt lịch ngay</span>
-                    <Sparkles className="sparkle-icon w-5 h-5" />
-                  </button>
-                </div>
-              )}
+                    <Icon className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                    <span className="text-[12px] text-stone-500">{label}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* BOOKING CTA — dùng CalendarPlus */}
+              <button
+                onClick={() => {
+                  navigate("/user/schedule");
+                  setIsMenuOpen(false);
+                }}
+                className="w-full mt-3 flex items-center justify-center gap-2 py-2.5 bg-rose-700 text-white text-sm font-medium rounded-xl hover:bg-rose-800 transition-colors"
+              >
+                <CalendarPlus className="w-4 h-4" />
+                Đặt lịch ngay
+              </button>
+
+              {/* CONSULT SHORTCUT — dùng Stethoscope */}
+              <button
+                onClick={() => {
+                  navigate("/services");
+                  setIsMenuOpen(false);
+                }}
+                className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 border border-stone-200 text-stone-600 text-sm font-medium rounded-xl hover:bg-stone-50 transition-colors"
+              >
+                <Stethoscope className="w-4 h-4" />
+                Xem dịch vụ khám
+              </button>
+
+              <div className="mt-4 pt-4 border-t border-stone-100">
+                {user ? (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => navigate("/user/profile")}
+                      className="w-full px-4 py-2.5 border border-stone-200 text-stone-700 text-sm rounded-xl hover:bg-stone-50 transition-colors"
+                    >
+                      Hồ sơ cá nhân
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-2.5 border border-rose-200 text-rose-600 text-sm rounded-xl hover:bg-rose-50 transition-colors"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => navigate("/auth")}
+                      className="w-full px-4 py-2.5 border border-stone-200 text-stone-700 text-sm rounded-xl hover:bg-stone-50 transition-colors"
+                    >
+                      Đăng nhập
+                    </button>
+                    <button
+                      onClick={() => navigate("/auth/register")}
+                      className="w-full px-4 py-2.5 bg-rose-700 text-white text-sm rounded-xl hover:bg-rose-800 transition-colors"
+                    >
+                      Đăng ký
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
       </header>
 
-      {/* Spacer */}
-      <div className="h-20"></div>
+      {/* SPACER — bù cho announcement bar (37px) + header (66px) */}
+      <div className="h-[103px]" />
     </>
   );
 };
