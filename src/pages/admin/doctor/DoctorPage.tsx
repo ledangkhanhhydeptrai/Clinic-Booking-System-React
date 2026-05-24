@@ -16,6 +16,12 @@ import { NotificationProps } from "../../../notification/Notification";
 import { Alert, Snackbar } from "@mui/material";
 import { CheckCircleIcon } from "lucide-react";
 import SlideTransitions from "../../../slide/SlideTransition";
+import { AxiosError } from "axios";
+interface ApiErrorResponse {
+  status: number;
+  message: string;
+  data: null;
+}
 export default function DoctorPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterSpecialty, setFilterSpecialty] = React.useState("all");
@@ -33,7 +39,8 @@ export default function DoctorPage() {
     severity: "success"
   });
   const { data: doctors = [], createDoctor } = useDoctor();
-  const { updateDoctor, deleteDoctor } = useDoctor();
+  const { updateDoctor, deleteDoctorAsync } = useDoctor();
+
   // Computed values
   const specialties = React.useMemo(() => {
     return Array.from(
@@ -129,11 +136,36 @@ export default function DoctorPage() {
   };
 
   const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Bạn có chắc muốn xóa bác sĩ này không?"
+    );
+
+    if (!confirmDelete) return;
+
     try {
-      await deleteDoctor(id);
-      alert("Xóa bác sĩ thành công");
+      await deleteDoctorAsync(id);
+
+      setNotification({
+        open: true,
+        message: "Xóa bác sĩ thành công",
+        severity: "success"
+      });
     } catch (error) {
-      console.error("Error:", error);
+      const errors = error as AxiosError<ApiErrorResponse>;
+
+      console.error("Error:", errors);
+
+      let message = "Có lỗi xảy ra khi xóa bác sĩ";
+
+      if (errors.response && errors.response.data) {
+        message = errors.response.data.message;
+      }
+
+      setNotification({
+        open: true,
+        message,
+        severity: "error"
+      });
     }
   };
 
